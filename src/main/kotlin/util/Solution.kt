@@ -1,6 +1,7 @@
 package util
 
 import days.day1.Day1
+import days.day2.Day2
 import util.ConsoleUtils.header
 import java.io.File
 import java.text.SimpleDateFormat
@@ -8,7 +9,8 @@ import java.util.*
 import kotlin.system.measureTimeMillis
 
 val days = mapOf(
-    1 to Day1
+    1 to Day1,
+    2 to Day2
 )
 class Solution {
     fun greet(): Int{
