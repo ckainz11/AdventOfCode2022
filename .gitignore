@@ -163,3 +163,5 @@ gradle-app.setting
 # Custom
 # AoC input files
 *.in
+# Session config for fetching inputs
+Config.kt

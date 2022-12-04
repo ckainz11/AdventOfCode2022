@@ -14,6 +14,7 @@ repositories {
 
 dependencies {
     testImplementation(kotlin("test"))
+    implementation("com.github.kittinunf.fuel", "fuel", "2.3.1")
 }
 
 tasks.test {

@@ -9,6 +9,9 @@ import java.io.File
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.system.measureTimeMillis
+import com.github.kittinunf.fuel.Fuel
+import com.github.kittinunf.result.Result
+import java.lang.IllegalStateException
 
 val days = mapOf(
     1 to Day1,
@@ -16,14 +19,15 @@ val days = mapOf(
     3 to Day3,
     4 to Day4
 )
+
 class Solution {
-    fun greet(): Int{
+    fun greet(): Int {
         println(header)
         println("Merry Christmas! I want to see the solution for day: ")
         return getDay()
     }
 
-    fun solve(day: Int){
+    fun solve(day: Int) {
         printDayHeader(day)
 
         val exampleInput = getInputFile(day, true)
@@ -55,12 +59,14 @@ class Solution {
         printSolution("$actualExampleOutPart2 (in $example2time ms)", exampleOutputPart2, "$actualOutPart2 (in $actual2time ms)", 2, part2Valid )
 
     }
-    private fun printSolution(exampleOut: String, expectedOut: String, out: String, part: Int, valid: Boolean){
+
+    private fun printSolution(exampleOut: String, expectedOut: String, out: String, part: Int, valid: Boolean) {
         printPartHeader(valid, part)
         println("Example output: $exampleOut")
         println("Expected output: $expectedOut")
         println("Real output: $out")
     }
+
     private fun printPartHeader(valid: Boolean, part: Int) {
         val icon = if (valid) "✅" else "❌"
         val partHeader = "${ConsoleUtils.BLACK_BACKGROUND_BRIGHT}Part $part $icon"
@@ -68,22 +74,43 @@ class Solution {
         println()
         print(ConsoleUtils.RESET)
     }
+
     private fun getExampleOut(day: Int, part: Int): String {
-        if(part != 1 && part != 2) error("Not a valid part")
-        val file = File("src/main/resources/day$day"+"_part$part.out")
-        return file.readText()
-    }
-    private fun getInputFile(day: Int, example: Boolean): String {
-        var filePath = "src/main/resources/day$day."
-        filePath += if(example) "example" else "in"
-        val file = File(filePath)
+        if (part != 1 && part != 2) error("Not a valid part")
+        val file = File("src/main/resources/day$day" + "_part$part.out")
+
         return if(file.exists()) file.readText()
-        else if(!example) fetchFile(day).readText()
-        else error("Example file for this day does not exist")
+        else {
+            file.createNewFile()
+            error("Example output file for part $part doesnt exist")
+        }
     }
 
-    private fun fetchFile(day: Int): File {
-        TODO("Not yet implemented")
+    private fun getInputFile(day: Int, example: Boolean): String {
+        var filePath = "src/main/resources/day$day."
+        filePath += if (example) "example" else "in"
+        val file = File(filePath)
+        return if (file.exists()) file.readText()
+        else if (!example) fetchFile(day, file).readText()
+        else {
+            file.createNewFile()
+            error("Example file for this day does not exist")
+        }
+    }
+
+    private fun fetchFile(day: Int, input: File): File {
+        val url = "https://adventofcode.com/2022/day/$day/input"
+        val (_, _, result) = Fuel.get(url)
+            .header("Cookie", "session=${Config.session}")
+            .responseString()
+        if (result is Result.Failure) {
+            throw result.error
+        }
+
+        val body = result.get()
+        input.createNewFile()
+        input.writeText(body.trim())
+        return input
     }
 
 
@@ -91,16 +118,16 @@ class Solution {
         val dayIn = readLine() ?: "0"
         var day = try {
             dayIn.toInt()
-        } catch(e: NumberFormatException) {
+        } catch (e: NumberFormatException) {
             0
         }
-        if(day <= 0 || day > 25){
+        if (day <= 0 || day > 25) {
             println("Hey! That's not a day of the advent! Doing today's solution instead")
             val sdf = SimpleDateFormat("dd/M")
             val today = sdf.format(Date()).split("/")
             val dayC = today[0].toInt()
             day = dayC
-            if(dayC > 25 || today[1].toInt() != 12){
+            if (dayC > 25 || today[1].toInt() != 12) {
                 println("Advent is over! :( Falling back to Day 1")
                 day = 1
             }
@@ -110,7 +137,7 @@ class Solution {
     }
 
 
-    private fun printDayHeader(day: Int){
+    private fun printDayHeader(day: Int) {
         val sb = StringBuilder()
 
         val inset = "Day $day"
@@ -123,6 +150,7 @@ class Solution {
 
         println(sb.toString())
     }
+
     fun String.makeBlink(): String {
         val sb = StringBuilder()
         this.toList().forEach {
