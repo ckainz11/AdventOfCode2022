@@ -11,13 +11,17 @@ object Day4 : Day {
 
 
     override fun solve2(input: String): String = parseRanges(input)
-    .count { it.first overlaps it.second }
-    .toString()
+        .count { it.first overlaps it.second }
+        .toString()
 
-    private fun parseRanges(input: String) = input.lines().map { line -> line.split(",")
-        .let { (left, right) -> Pair(
-            left.split("-").let { (first, last) -> first.toInt()..last.toInt() },
-            right.split("-").let { (first, last) -> first.toInt()..last.toInt() }
-        ) } }
+    private fun parseRanges(input: String) = input.lines().map { line ->
+        line.split(",")
+            .let { (left, right) ->
+                Pair(
+                    left.split("-").let { (first, last) -> first.toInt()..last.toInt() },
+                    right.split("-").let { (first, last) -> first.toInt()..last.toInt() }
+                )
+            }
+    }
 
 }
