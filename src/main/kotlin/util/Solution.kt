@@ -11,13 +11,15 @@ import java.util.*
 import kotlin.system.measureTimeMillis
 import com.github.kittinunf.fuel.Fuel
 import com.github.kittinunf.result.Result
+import days.day5.Day5
 import java.lang.IllegalStateException
 
 val days = mapOf(
     1 to Day1,
     2 to Day2,
     3 to Day3,
-    4 to Day4
+    4 to Day4,
+    5 to Day5
 )
 
 class Solution {
