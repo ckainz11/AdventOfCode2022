@@ -7,11 +7,10 @@ object Day5 : Day {
     private fun parseInput(input: String): Pair<Crane, List<Instruction>> {
         val (stacks, inst) = input.split("\n\n").map { it.lines() }
         val stackCount = stacks.takeLast(1)[0].trim().split("\\s+".toRegex()).map { it.toInt() }
-        val transposed = stacks.dropLast(1).map { it.toList() }
         val parsed = emptyList<ArrayDeque<Char>>().toMutableList()
         stackCount.forEach { stackNumber ->
             val stack = ArrayDeque<Char>()
-            transposed.forEach { line ->
+            stacks.dropLast(1).map {it.toList()}.forEach { line ->
                 val char = line.getOrNull((stackNumber - 1) * 4 + 1)
                 if (char != null && char != ' ')
                     stack.addFirst(char)

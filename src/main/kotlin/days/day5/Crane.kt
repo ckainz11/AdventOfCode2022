@@ -1,7 +1,5 @@
 package days.day5
 
-import util.Matrix
-
 class Crane(private val stacks: Array<ArrayDeque<Char>>) {
 
     private fun move9000(instruction: Instruction) {
