@@ -12,6 +12,7 @@ import kotlin.system.measureTimeMillis
 import com.github.kittinunf.fuel.Fuel
 import com.github.kittinunf.result.Result
 import days.day5.Day5
+import days.day6.Day6
 import java.lang.IllegalStateException
 
 val days = mapOf(
@@ -19,7 +20,8 @@ val days = mapOf(
     2 to Day2,
     3 to Day3,
     4 to Day4,
-    5 to Day5
+    5 to Day5,
+    6 to Day6
 )
 
 class Solution {
