@@ -4,13 +4,13 @@ import days.Day
 import util.containsRange
 import util.overlaps
 
-object Day4 : Day {
-    override fun solve1(input: String): String = parseRanges(input)
+class Day4(override var input: String) : Day(input) {
+    override fun solve1(): String = parseRanges(input)
         .count { it.first containsRange it.second || it.second containsRange it.first }
         .toString()
 
 
-    override fun solve2(input: String): String = parseRanges(input)
+    override fun solve2(): String = parseRanges(input)
         .count { it.first overlaps it.second }
         .toString()
 

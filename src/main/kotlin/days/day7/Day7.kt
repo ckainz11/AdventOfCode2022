@@ -2,7 +2,7 @@ package days.day7
 
 import days.Day
 
-object Day7 : Day {
+class Day7(override var input: String) : Day(input) {
     private fun parseSizes(lines: List<String>): MutableList<Dir> {
         val root = Dir("/")
         val dirs = mutableListOf(root)
@@ -39,11 +39,11 @@ object Day7 : Day {
         return dirs
     }
 
-    override fun solve1(input: String): String {
+    override fun solve1(): String {
         return parseSizes(input.lines()).sumOf { if (it.size < 100000) it.size else 0 }.toString()
     }
 
-    override fun solve2(input: String): String {
+    override fun solve2(): String {
         val dirs = parseSizes(input.lines())
         val missing = 70000000 - dirs.first().size
         return dirs.filter { it.size >= 30000000 - missing }.minOf { it.size }.toString()

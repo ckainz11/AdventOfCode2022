@@ -1,6 +1,6 @@
 package days
 
-interface Day {
-    fun solve1(input: String): String
-    fun solve2(input: String): String
+abstract class Day(open var input: String) {
+    abstract fun solve1(): String
+    abstract fun solve2(): String
 }

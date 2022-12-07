@@ -2,8 +2,8 @@ package days.day2
 
 import days.Day
 
-object Day2 : Day {
-    override fun solve1(input: String): String = input.lines().sumOf { roundScore(it) }.toString()
+class Day2(override var input: String): Day(input) {
+    override fun solve1(): String = input.lines().sumOf { roundScore(it) }.toString()
 
     private fun roundScore(round: String): Int {
         return when(round) {
@@ -20,7 +20,7 @@ object Day2 : Day {
         }
     }
 
-    override fun solve2(input: String): String = input.lines().sumOf { roundScore2(it) }.toString()
+    override fun solve2(): String = input.lines().sumOf { roundScore2(it) }.toString()
 
     private fun roundScore2(round: String): Int {
         return when(round) {

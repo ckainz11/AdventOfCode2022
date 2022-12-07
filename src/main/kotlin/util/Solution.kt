@@ -14,16 +14,15 @@ import com.github.kittinunf.result.Result
 import days.day5.Day5
 import days.day6.Day6
 import days.day7.Day7
-import java.lang.IllegalStateException
 
 val days = mapOf(
-    1 to Day1,
-    2 to Day2,
-    3 to Day3,
-    4 to Day4,
-    5 to Day5,
-    6 to Day6,
-    7 to Day7
+    1 to Day1(""),
+    2 to Day2(""),
+    3 to Day3(""),
+    4 to Day4(""),
+    5 to Day5(""),
+    6 to Day6(""),
+    7 to Day7("")
 )
 
 class Solution {
@@ -36,45 +35,98 @@ class Solution {
     fun solve(day: Int) {
         printDayHeader(day)
 
+        val d = days[day] ?: Day0("")
+
         val exampleInput = getInputFile(day, true)
         val exampleOutputPart1 = getExampleOut(day, 1)
         val exampleOutputPart2 = getExampleOut(day, 2)
         val realInput = getInputFile(day, false)
 
-        val d = days[day] ?: Day0
-        //Example Part 1
-        val actualExampleOutPart1: String
-        val example1time = measureTimeMillis { actualExampleOutPart1 = d.solve1(exampleInput) }
-        //Real Part 1
-        val actualOutPart1: String
-        val actual1time = measureTimeMillis { actualOutPart1 = d.solve1(realInput) }
+        d.input = exampleInput
 
-        val part1Valid = actualExampleOutPart1 == exampleOutputPart1
-        assert(part1Valid)
-        printSolution("$actualExampleOutPart1 (in $example1time ms)", exampleOutputPart1, "$actualOutPart1 (in $actual1time ms)", 1, part1Valid )
+        //Example Part 1
+        var example1ResultState: ResultState
+        var actualExampleOutPart1: String
+        var example1time = 0L
+
+        try {
+            example1time = measureTimeMillis { actualExampleOutPart1 = d.solve1() }
+            example1ResultState = if(actualExampleOutPart1 == exampleOutputPart1) ResultState.CORRECT else ResultState.WRONG
+        } catch(e: NotImplementedError) {
+            example1ResultState = ResultState.WARNING
+            actualExampleOutPart1 = "NOT IMPLEMENTED"
+        }
+
+
         //Example Part 2
-        val actualExampleOutPart2: String
-        val example2time = measureTimeMillis { actualExampleOutPart2 = d.solve2(exampleInput) }
+        var example2ResultState: ResultState
+        var actualExampleOutPart2: String
+        var example2time = 0L
+
+        try {
+            example2time = measureTimeMillis { actualExampleOutPart2 = d.solve2() }
+            example2ResultState = if (actualExampleOutPart2 == exampleOutputPart2) ResultState.CORRECT else ResultState.WRONG
+        } catch(e: NotImplementedError) {
+            example2ResultState = ResultState.WARNING
+            actualExampleOutPart2 = "NOT IMPLEMENTED"
+        }
+
+
+        d.input = realInput
+
+        //Real Part 1
+        var actualOutPart1: String
+        var actual1time = 0L
+        if(example1ResultState != ResultState.WARNING) {
+            actual1time = measureTimeMillis { actualOutPart1 = d.solve1() }
+        } else {
+            actualOutPart1 = "NOT IMPLEMENTED"
+        }
 
         //Real Part 2
-        val actualOutPart2: String
-        val actual2time = measureTimeMillis { actualOutPart2 = d.solve2(realInput) }
+        var actualOutPart2: String
+        var actual2time = 0L
+        if(example2ResultState != ResultState.WARNING) {
+             actual2time = measureTimeMillis { actualOutPart2 = d.solve2() }
+        }  else {
+            actualOutPart2 = "NOT IMPLEMENTED"
+        }
 
-        val part2Valid = actualExampleOutPart2 == exampleOutputPart2
-        assert(part2Valid)
-        printSolution("$actualExampleOutPart2 (in $example2time ms)", exampleOutputPart2, "$actualOutPart2 (in $actual2time ms)", 2, part2Valid )
+
+        printSolution(
+            "$actualExampleOutPart1 (in $example1time ms)",
+            exampleOutputPart1,
+            "$actualOutPart1 (in $actual1time ms)",
+            1,
+            example1ResultState
+        )
+
+
+
+
+        printSolution(
+            "$actualExampleOutPart2 (in $example2time ms)",
+            exampleOutputPart2,
+            "$actualOutPart2 (in $actual2time ms)",
+            2,
+            example2ResultState
+        )
 
     }
 
-    private fun printSolution(exampleOut: String, expectedOut: String, out: String, part: Int, valid: Boolean) {
-        printPartHeader(valid, part)
+    private fun printSolution(exampleOut: String, expectedOut: String, out: String, part: Int, resultState: ResultState) {
+        printPartHeader(resultState, part)
         println("Example output: $exampleOut")
         println("Expected output: $expectedOut")
         println("Real output: $out")
     }
 
-    private fun printPartHeader(valid: Boolean, part: Int) {
-        val icon = if (valid) "✅" else "❌"
+    private fun printPartHeader(resultState: ResultState, part: Int) {
+        val icon = when (resultState) {
+            ResultState.CORRECT -> "✅"
+            ResultState.WRONG -> "❌"
+            ResultState.WARNING -> "⚠️"
+        }
         val partHeader = "${ConsoleUtils.BLACK_BACKGROUND_BRIGHT}Part $part $icon"
         print(partHeader)
         println()
@@ -85,10 +137,10 @@ class Solution {
         if (part != 1 && part != 2) error("Not a valid part")
         val file = File("src/main/resources/day$day" + "_part$part.out")
 
-        return if(file.exists()) file.readText()
+        return if (file.exists()) file.readText()
         else {
             file.createNewFile()
-            error("Example output file for part $part doesnt exist")
+            return "not found, file has been created"
         }
     }
 
@@ -100,7 +152,7 @@ class Solution {
         else if (!example) fetchFile(day, file).readText()
         else {
             file.createNewFile()
-            error("Example file for this day does not exist")
+            return "not found, file has been created"
         }
     }
 
@@ -163,5 +215,10 @@ class Solution {
             sb.append(ConsoleUtils.blinkColors.random() + it + ConsoleUtils.RESET)
         }
         return sb.toString()
+    }
+    enum class ResultState {
+        CORRECT,
+        WRONG,
+        WARNING
     }
 }

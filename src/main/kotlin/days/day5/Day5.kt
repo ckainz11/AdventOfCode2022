@@ -2,7 +2,7 @@ package days.day5
 
 import days.Day
 
-object Day5 : Day {
+class Day5(override var input: String) : Day(input) {
 
     private fun parseInput(input: String): Pair<Crane, List<Instruction>> {
         val (stacks, inst) = input.split("\n\n").map { it.lines() }
@@ -22,12 +22,12 @@ object Day5 : Day {
             inst.map { ins -> ins.split(" ").let { Instruction(it[1].toInt(), it[3].toInt(), it[5].toInt()) } })
     }
 
-    override fun solve1(input: String): String {
+    override fun solve1(): String {
         val (crane, instructions) = parseInput(input)
         return crane.moveAll(instructions, 1)
     }
 
-    override fun solve2(input: String): String {
+    override fun solve2(): String {
         val (crane, instructions) = parseInput(input)
         return crane.moveAll(instructions, 2)
     }

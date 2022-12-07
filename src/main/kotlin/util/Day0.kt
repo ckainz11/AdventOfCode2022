@@ -2,12 +2,12 @@ package util
 
 import days.Day
 
-object Day0 : Day {
-    override fun solve1(input: String): String {
+class Day0(override var input: String) : Day(input) {
+    override fun solve1(): String {
         TODO("Not yet implemented")
     }
 
-    override fun solve2(input: String): String {
+    override fun solve2(): String {
         TODO("Not yet implemented")
     }
 }
