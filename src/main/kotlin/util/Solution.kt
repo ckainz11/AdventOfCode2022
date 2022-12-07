@@ -13,6 +13,7 @@ import com.github.kittinunf.fuel.Fuel
 import com.github.kittinunf.result.Result
 import days.day5.Day5
 import days.day6.Day6
+import days.day7.Day7
 import java.lang.IllegalStateException
 
 val days = mapOf(
@@ -21,7 +22,8 @@ val days = mapOf(
     3 to Day3,
     4 to Day4,
     5 to Day5,
-    6 to Day6
+    6 to Day6,
+    7 to Day7
 )
 
 class Solution {
