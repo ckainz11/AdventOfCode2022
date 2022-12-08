@@ -7,7 +7,8 @@ class Day8(override var input: String) : Day(input) {
     private lateinit var forest: Matrix<Int>
     override fun solve1(): String {
         forest = matrixOf(input.lines().map { row -> row.toList().map(Char::digitToInt) })
-        return forest.mapMatrixIndexed { i, j, tree -> isVisible(i, j, tree) }.count { it }.toString()
+        return forest.mapMatrixIndexed { i, j, tree -> forest.getRangesToEdge(i, j).any { it.isEmpty() || it.all { t -> t < tree } } }
+            .count { it }.toString()
     }
 
     override fun solve2(): String =
@@ -27,14 +28,14 @@ class Day8(override var input: String) : Day(input) {
 
     private fun calcViewScore(row: Int, col: Int, tree: Int): Int {
         val directions = listOf('N', 'E', 'S', 'W')
-        return directions.map { look(tree, row, col, it) }.reduce(Int::times)
+        return directions.map { look(Point(row, col), it, tree) }.reduce(Int::times)
     }
 
-    private fun look(tree: Int, row: Int, col: Int, direction: Char): Int {
-        val next = Point(col, row).moveInDirection(direction)
+    private fun look(point: Point, direction: Char, tree: Int): Int {
+        val next = point.moveInDirection(direction)
         return try {
             if (forest[next.y][next.x] < tree)
-                1 + look(tree, next.y, next.x, direction)
+                1 + look(next, direction, tree)
             else 1
         } catch (ex: IndexOutOfBoundsException) {
             0
