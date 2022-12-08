@@ -1,49 +1,70 @@
 package util
 
+import java.lang.IllegalArgumentException
 import java.util.*
 
 typealias Matrix<T> = List<List<T>>
 typealias MutableMatrix<T> = MutableList<MutableList<T>>
-fun <T> matrixOf(vararg rows: List<T>): Matrix<T> = List(rows.size) {i -> rows[i]}
-fun <T> matrixOf(rows: List<List<T>>): Matrix<T> = List(rows.size) {i -> rows[i]}
+
+fun <T> matrixOf(vararg rows: List<T>): Matrix<T> = List(rows.size) { i -> rows[i] }
+fun <T> matrixOf(rows: List<List<T>>): Matrix<T> = List(rows.size) { i -> rows[i] }
 fun <T> Matrix<T>.toMutableMatrix(): MutableMatrix<T> = this.map { it.toMutableList() }.toMutableList()
 fun <T> Matrix<T>.getColumn(col: Int): List<T> = getCol(this, col)
 fun <T, R> Matrix<T>.mapMatrix(transform: (T) -> R): Matrix<R> = this.map { it.map(transform) }
-fun <T,R> Matrix<T>.mapMatrixIndexed(transform: (Int, Int, T) -> R): Matrix<R> = this.mapIndexed {i, row -> row.mapIndexed {j, col -> transform(i, j, col)}}
+fun <T, R> Matrix<T>.mapMatrixIndexed(transform: (Int, Int, T) -> R): Matrix<R> =
+    this.mapIndexed { i, row -> row.mapIndexed { j, col -> transform(i, j, col) } }
+
 fun <T> Matrix<T>.matrixToString(): String = this.joinToString("\n") { it.joinToString(", ") }
-fun <T: Comparable<T>> Matrix<T>.matrixMax(): T = this.mapNotNull { it.maxOrNull() }.maxOrNull()!!
-fun <T: Comparable<T>> Matrix<T>.matrixMin(): T = this.mapNotNull { it.minOrNull() }.minOrNull()!!
+fun <T : Comparable<T>> Matrix<T>.matrixMax(): T = this.mapNotNull { it.maxOrNull() }.maxOrNull()!!
+fun <T : Comparable<T>> Matrix<T>.matrixMin(): T = this.mapNotNull { it.minOrNull() }.minOrNull()!!
 fun <T> Matrix<T>.getColNum(): Int = this[0].size
 fun <T> Matrix<T>.getRowNum(): Int = this.size
 fun <T> Matrix<T>.transposed(times: Int = 1): Matrix<T> = transposeMatrix(this, times)
-fun <T> emptyMatrixOf(rows: Int, columns: Int, default: T) = MutableList(rows) {MutableList(columns) {default} }
+fun <T> emptyMatrixOf(rows: Int, columns: Int, default: T) = MutableList(rows) { MutableList(columns) { default } }
 fun <T> Matrix<T>.count(predicate: (T) -> Boolean) = this.sumOf { it.count(predicate) }
-fun <T> Matrix<T>.getAdjacent(row: Int, col: Int): List<T> = this.getAdjacentCoordinates(row, col).map { it -> this[it.y][it.x] }
+fun <T> Matrix<T>.getAdjacent(row: Int, col: Int): List<T> =
+    this.getAdjacentCoordinates(row, col).map { it -> this[it.y][it.x] }
+
 fun <T> Matrix<T>.getAdjacentCoordinates(row: Int, col: Int): List<Point> {
     val adjacent = mutableListOf<Point>()
-    if(col != 0) adjacent.add(Point(col - 1, row))
-    if(col != this.getColNum()-1) adjacent.add(Point(col + 1, row))
-    if(row != 0) adjacent.add(Point(col, row - 1))
-    if(row != this.getRowNum()-1) adjacent.add(Point(col, row + 1))
+    if (col != 0) adjacent.add(Point(col - 1, row))
+    if (col != this.getColNum() - 1) adjacent.add(Point(col + 1, row))
+    if (row != 0) adjacent.add(Point(col, row - 1))
+    if (row != this.getRowNum() - 1) adjacent.add(Point(col, row + 1))
     return adjacent
 }
+
 fun <T> Matrix<T>.getAdjacentCoordinates(point: Point): List<Point> = getAdjacentCoordinates(point.y, point.x)
 fun <T> Matrix<T>.getSurroundingCoordinates(row: Int, col: Int): List<Point> {
     val adjacent = getAdjacentCoordinates(row, col).toMutableList()
-    if(col != 0 && row != 0) adjacent.add(Point(col-1, row-1))
-    if(col != 0 && row != this.getRowNum() - 1) adjacent.add(Point(col-1, row + 1))
-    if(col != this.getColNum() - 1 && row != 0) adjacent.add(Point(col + 1, row - 1))
-    if(col != this.getColNum() - 1 && row != this.getRowNum() - 1) adjacent.add(Point(col + 1, row + 1))
+    if (col != 0 && row != 0) adjacent.add(Point(col - 1, row - 1))
+    if (col != 0 && row != this.getRowNum() - 1) adjacent.add(Point(col - 1, row + 1))
+    if (col != this.getColNum() - 1 && row != 0) adjacent.add(Point(col + 1, row - 1))
+    if (col != this.getColNum() - 1 && row != this.getRowNum() - 1) adjacent.add(Point(col + 1, row + 1))
     return adjacent
 }
-fun <T> Matrix<T>.getSurroundingCoordinates(point: Point): List<Point> = this.getSurroundingCoordinates(point.y, point.x)
+
+fun <T> Matrix<T>.getSurroundingCoordinates(point: Point): List<Point> =
+    this.getSurroundingCoordinates(point.y, point.x)
+
 data class Point(var x: Int, var y: Int)
+
+fun Point.moveInDirection(direction: Char, step: Int = 1): Point = when (direction) {
+    'N' -> Point(this.x, this.y - 1)
+    'S' -> Point(this.x, this.y + 1)
+    'W' -> Point(this.x - 1, this.y)
+    'E' -> Point(this.x + 1, this.y)
+    else -> throw IllegalArgumentException("$direction is not a valid direction")
+}
+
+
 data class Point3(val x: Int, val y: Int, val z: Int)
-fun  String.hexToBinaryString(): String {
+
+fun String.hexToBinaryString(): String {
     val num = this.uppercase(Locale.getDefault())
     var binary = ""
-    for(hex in num){
-        when(hex){
+    for (hex in num) {
+        when (hex) {
             '0' -> binary += "0000"
             '1' -> binary += "0001"
             '2' -> binary += "0010"
@@ -124,7 +145,7 @@ private fun <T> transposeMatrix(matrix: Matrix<T>, times: Int): Matrix<T> {
 fun transpose(matrix: List<String>): List<String> {
     val col = matrix[0].length
     val row = matrix.size
-    val transpose = MutableList(col) { MutableList(row) {' '} }
+    val transpose = MutableList(col) { MutableList(row) { ' ' } }
     for (i in 0..row - 1) {
         for (j in 0..col - 1) {
             transpose[j][i] = matrix[i][j]
@@ -141,5 +162,8 @@ fun <T> getCol(array: List<List<T>>, col: Int): List<T> {
     }
     return column
 }
-infix fun IntRange.overlaps(other: IntRange): Boolean = first in other || last in other || other.first in this || other.last in this
+
+infix fun IntRange.overlaps(other: IntRange): Boolean =
+    first in other || last in other || other.first in this || other.last in this
+
 infix fun IntRange.containsRange(other: IntRange): Boolean = other.first in this && other.last in this
