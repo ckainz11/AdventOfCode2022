@@ -4,7 +4,7 @@ import days.Day
 
 class Day7(override val input: String) : Day(input) {
 
-    private var directories = emptyList<Directory>()
+    private var directories = parseSizes(input.lines())
 
     private fun parseSizes(lines: List<String>): MutableList<Directory> {
         val directories = mutableListOf(Directory(null))
@@ -19,15 +19,12 @@ class Day7(override val input: String) : Day(input) {
         return directories
     }
 
-    override fun solve1(): String {
-        directories = parseSizes(input.lines())
-        return directories.sumOf { if (it.totalSize < 100_000) it.totalSize else 0 }.toString()
-    }
+    override fun solve1(): String = directories.sumOf { if (it.totalSize < 100_000) it.totalSize else 0 }.toString()
 
-    override fun solve2(): String {
-        val missing = 30_000_000 - ( 70_000_000 - directories.first().totalSize)
-        return directories.filter { it.totalSize >= missing }.minOf { it.totalSize }.toString()
-    }
+
+    override fun solve2(): String = (30_000_000 - ( 70_000_000 - directories.first().totalSize))
+        .let { missing -> directories.filter { it.totalSize >= missing }.minOf { it.totalSize }.toString() }
+
 
     data class Directory(val parent: Directory?, var children: List<Directory> = emptyList()) {
         val totalSize: Long get() = filesSize + children.sumOf { it.totalSize }
