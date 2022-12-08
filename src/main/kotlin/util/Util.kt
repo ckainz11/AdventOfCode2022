@@ -9,6 +9,7 @@ fun <T> matrixOf(rows: List<List<T>>): Matrix<T> = List(rows.size) {i -> rows[i]
 fun <T> Matrix<T>.toMutableMatrix(): MutableMatrix<T> = this.map { it.toMutableList() }.toMutableList()
 fun <T> Matrix<T>.getColumn(col: Int): List<T> = getCol(this, col)
 fun <T, R> Matrix<T>.mapMatrix(transform: (T) -> R): Matrix<R> = this.map { it.map(transform) }
+fun <T,R> Matrix<T>.mapMatrixIndexed(transform: (Int, Int, T) -> R): Matrix<R> = this.mapIndexed {i, row -> row.mapIndexed {j, col -> transform(i, j, col)}}
 fun <T> Matrix<T>.matrixToString(): String = this.joinToString("\n") { it.joinToString(", ") }
 fun <T: Comparable<T>> Matrix<T>.matrixMax(): T = this.mapNotNull { it.maxOrNull() }.maxOrNull()!!
 fun <T: Comparable<T>> Matrix<T>.matrixMin(): T = this.mapNotNull { it.minOrNull() }.minOrNull()!!
