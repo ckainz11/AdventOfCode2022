@@ -5,9 +5,13 @@ import util.*
 
 class Day8(override var input: String) : Day(input) {
     private lateinit var forest: Matrix<Int>
-    override fun solve1(): String = forest.mapMatrixIndexed {i, j, tree -> isVisible(i, j, tree) }.count { it }.toString()
+    override fun solve1(): String {
+        forest = matrixOf(input.lines().map { row -> row.toList().map(Char::digitToInt) })
+        return forest.mapMatrixIndexed { i, j, tree -> isVisible(i, j, tree) }.count { it }.toString()
+    }
 
-    override fun solve2(): String = forest.mapMatrixIndexed { i, j, tree -> calcViewScore(tree, i, j) }.matrixMax().toString()
+    override fun solve2(): String =
+        forest.mapMatrixIndexed { i, j, tree -> calcViewScore(i, j, tree) }.matrixMax().toString()
 
     private fun isVisible(i: Int, j: Int, tree: Int): Boolean {
         val row = forest[i]
@@ -21,9 +25,9 @@ class Day8(override var input: String) : Day(input) {
         return directions.any { it.isEmpty() || it.all { other -> other < tree } }
     }
 
-    private fun calcViewScore(tree: Int, row: Int, col: Int): Int {
+    private fun calcViewScore(row: Int, col: Int, tree: Int): Int {
         val directions = listOf('N', 'E', 'S', 'W')
-        return directions.map { look(tree, row, col, it) }.reduce { left, right -> left * right }
+        return directions.map { look(tree, row, col, it) }.reduce(Int::times)
     }
 
     private fun look(tree: Int, row: Int, col: Int, direction: Char): Int {
