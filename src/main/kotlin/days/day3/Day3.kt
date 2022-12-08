@@ -2,7 +2,7 @@ package days.day3
 
 import days.Day
 
-class Day3(override var input: String) : Day(input) {
+class Day3(override val input: String) : Day(input) {
     override fun solve1(): String = input.lines()
         .map { it.chunked(it.length / 2) }
         .sumOf { it.sharedItem().priority() }

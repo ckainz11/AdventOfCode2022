@@ -2,7 +2,7 @@ package days.day2
 
 import days.Day
 
-class Day2(override var input: String): Day(input) {
+class Day2(override val input: String): Day(input) {
     override fun solve1(): String = input.lines().sumOf { roundScore(it) }.toString()
 
     private fun roundScore(round: String): Int {

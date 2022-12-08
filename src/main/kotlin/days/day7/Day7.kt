@@ -2,7 +2,7 @@ package days.day7
 
 import days.Day
 
-class Day7(override var input: String) : Day(input) {
+class Day7(override val input: String) : Day(input) {
 
     private var directories = emptyList<Directory>()
 

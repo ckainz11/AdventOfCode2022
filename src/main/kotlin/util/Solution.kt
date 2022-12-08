@@ -37,22 +37,23 @@ class Solution {
     fun solve(day: Int) {
         printDayHeader(day)
 
-        val d = days[day] ?: Day0("")
+
 
         val exampleInput = getInputFile(day, true)
         val exampleOutputPart1 = getExampleOut(day, 1)
         val exampleOutputPart2 = getExampleOut(day, 2)
         val realInput = getInputFile(day, false)
 
-        d.input = exampleInput
 
+
+        val dExample = DayFactory.getDayObject(day, exampleInput)
         //Example Part 1
         var example1ResultState: ResultState
         var actualExampleOutPart1: String
         var example1time = 0L
 
         try {
-            example1time = measureTimeMillis { actualExampleOutPart1 = d.solve1() }
+            example1time = measureTimeMillis { actualExampleOutPart1 = dExample.solve1() }
             example1ResultState = if(actualExampleOutPart1 == exampleOutputPart1) ResultState.CORRECT else ResultState.WRONG
         } catch(e: NotImplementedError) {
             example1ResultState = ResultState.WARNING
@@ -66,7 +67,7 @@ class Solution {
         var example2time = 0L
 
         try {
-            example2time = measureTimeMillis { actualExampleOutPart2 = d.solve2() }
+            example2time = measureTimeMillis { actualExampleOutPart2 = dExample.solve2() }
             example2ResultState = if (actualExampleOutPart2 == exampleOutputPart2) ResultState.CORRECT else ResultState.WRONG
         } catch(e: NotImplementedError) {
             example2ResultState = ResultState.WARNING
@@ -74,13 +75,13 @@ class Solution {
         }
 
 
-        d.input = realInput
+        val dReal = DayFactory.getDayObject(day, realInput)
 
         //Real Part 1
         var actualOutPart1: String
         var actual1time = 0L
         if(example1ResultState != ResultState.WARNING) {
-            actual1time = measureTimeMillis { actualOutPart1 = d.solve1() }
+            actual1time = measureTimeMillis { actualOutPart1 = dReal.solve1() }
         } else {
             actualOutPart1 = "NOT IMPLEMENTED"
         }
@@ -89,7 +90,7 @@ class Solution {
         var actualOutPart2: String
         var actual2time = 0L
         if(example2ResultState != ResultState.WARNING) {
-             actual2time = measureTimeMillis { actualOutPart2 = d.solve2() }
+             actual2time = measureTimeMillis { actualOutPart2 = dReal.solve2() }
         }  else {
             actualOutPart2 = "NOT IMPLEMENTED"
         }
