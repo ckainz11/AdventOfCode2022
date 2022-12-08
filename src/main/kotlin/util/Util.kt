@@ -56,10 +56,10 @@ fun <T> Matrix<T>.getSurroundingCoordinates(point: Point): List<Point> =
 data class Point(var x: Int, var y: Int)
 
 fun Point.moveInDirection(direction: Char, step: Int = 1): Point = when (direction) {
-    'N' -> Point(this.x, this.y - 1)
-    'S' -> Point(this.x, this.y + 1)
-    'W' -> Point(this.x - 1, this.y)
-    'E' -> Point(this.x + 1, this.y)
+    'N' -> Point(this.x, this.y - step)
+    'S' -> Point(this.x, this.y + step)
+    'W' -> Point(this.x - step, this.y)
+    'E' -> Point(this.x + step, this.y)
     else -> throw IllegalArgumentException("$direction is not a valid direction")
 }
 

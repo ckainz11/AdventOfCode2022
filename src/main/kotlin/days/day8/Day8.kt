@@ -15,7 +15,7 @@ class Day8(override var input: String) : Day(input) {
 
     private fun calcViewScore(row: Int, col: Int, tree: Int): Int {
         val directions = listOf('N', 'E', 'S', 'W')
-        return directions.map { look(Point(row, col), it, tree) }.reduce(Int::times)
+        return directions.map { look(Point(col, row), it, tree) }.reduce(Int::times)
     }
 
     private fun look(point: Point, direction: Char, tree: Int): Int {
