@@ -35,6 +35,12 @@ fun <T> Matrix<T>.getAdjacentCoordinates(row: Int, col: Int): List<Point> {
 }
 
 fun <T> Matrix<T>.getAdjacentCoordinates(point: Point): List<Point> = getAdjacentCoordinates(point.y, point.x)
+fun <T> Matrix<T>.getRangesToEdge(point: Point) = getRangesToEdge(point.y, point.x)
+fun <T> Matrix<T>.getRangesToEdge(row: Int, col: Int) = getColumnToEdge(row, col) + getRowToEdge(row, col)
+fun <T> Matrix<T>.getColumnToEdge(row: Int, col: Int): List<List<T>> = this.getColumn(col).let { listOf(it.subList(0, row), it.subList(row + 1, it.size)) }
+fun <T> Matrix<T>.getRowToEdge(row: Int, col: Int): List<List<T>> = this[row].let { listOf(it.subList(0, col), it.subList(col + 1, it.size)) }
+
+
 fun <T> Matrix<T>.getSurroundingCoordinates(row: Int, col: Int): List<Point> {
     val adjacent = getAdjacentCoordinates(row, col).toMutableList()
     if (col != 0 && row != 0) adjacent.add(Point(col - 1, row - 1))
