@@ -31,19 +31,11 @@ class Day8(override var input: String) : Day(input) {
     }
 
     private fun look(tree: Int, row: Int, col: Int, direction: Char): Int {
-        val next = Point(col, row)
-        when (direction) {
-            'N' -> next.y -= 1
-            'E' -> next.x += 1
-            'S' -> next.y += 1
-            'W' -> next.x -= 1
-        }
+        val next = Point(col, row).moveInDirection(direction)
         return try {
             if (forest[next.y][next.x] < tree)
                 1 + look(tree, next.y, next.x, direction)
-            else if (forest[next.y][next.x] >= tree)
-                1
-            else 0
+            else 1
         } catch (ex: IndexOutOfBoundsException) {
             0
         }
