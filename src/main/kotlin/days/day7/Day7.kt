@@ -4,19 +4,15 @@ import days.Day
 
 class Day7(override val input: String) : Day(input) {
 
-    private var directories = parseSizes(input.lines())
-
-    private fun parseSizes(lines: List<String>): MutableList<Directory> {
-        val directories = mutableListOf(Directory(null))
-        var current: Directory = directories.first()
-        lines.drop(1).forEach { line ->
+    private var directories = buildList {
+        var current: Directory = Directory(null) .also { add(it) }
+        input.lines().drop(1).forEach { line ->
             when {
                 line == "$ cd .." -> current = current.parent!!
-                line.startsWith("$ cd") -> Directory(current).also { current.children += it; directories += it; current = it }
+                line.startsWith("$ cd") -> Directory(current).also { current.children += it; add(it); current = it }
                 line[0].isDigit() -> current.filesSize += line.substringBefore(" ").toLong()
             }
         }
-        return directories
     }
 
     override fun solve1(): String = directories.sumOf { if (it.totalSize < 100_000) it.totalSize else 0 }.toString()
