@@ -14,6 +14,7 @@ import com.github.kittinunf.result.Result
 import days.day5.Day5
 import days.day6.Day6
 import days.day7.Day7
+import days.day8.Day8
 
 val days = mapOf(
     1 to Day1(""),
@@ -22,7 +23,8 @@ val days = mapOf(
     4 to Day4(""),
     5 to Day5(""),
     6 to Day6(""),
-    7 to Day7("")
+    7 to Day7(""),
+    8 to Day8("")
 )
 
 class Solution {
