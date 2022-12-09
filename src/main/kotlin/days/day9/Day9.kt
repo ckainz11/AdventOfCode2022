@@ -6,13 +6,13 @@ import util.moveInDirection
 import kotlin.math.abs
 import kotlin.math.sign
 
-class Day9(override val input: String) : Day(input) {
+class Day9(override val input: String) : Day<Int>(input) {
     private val moves = input.lines().map { it.substringBefore(" ")[0] to it.substringAfter(" ").toInt() }
 
 
-    override fun solve1(): String = visitedTailPositions(2).toString()
+    override fun solve1(): Int = visitedTailPositions(2)
 
-    override fun solve2(): String = visitedTailPositions(10).toString()
+    override fun solve2(): Int = visitedTailPositions(10)
 
     private fun visitedTailPositions(n: Int): Int {
         val knots = MutableList(n) { Point(0, 0) }

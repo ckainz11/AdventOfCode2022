@@ -2,8 +2,8 @@ package days.day2
 
 import days.Day
 
-class Day2(override val input: String): Day(input) {
-    override fun solve1(): String = input.lines().sumOf { roundScore(it) }.toString()
+class Day2(override val input: String): Day<Int>(input) {
+    override fun solve1(): Int = input.lines().sumOf { roundScore(it) }
 
     private fun roundScore(round: String): Int {
         return when(round) {
@@ -20,7 +20,7 @@ class Day2(override val input: String): Day(input) {
         }
     }
 
-    override fun solve2(): String = input.lines().sumOf { roundScore2(it) }.toString()
+    override fun solve2(): Int = input.lines().sumOf { roundScore2(it) }
 
     private fun roundScore2(round: String): Int {
         return when(round) {

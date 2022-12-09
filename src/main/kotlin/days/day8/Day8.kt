@@ -3,13 +3,13 @@ package days.day8
 import days.Day
 import util.*
 
-class Day8(override val input: String) : Day(input) {
+class Day8(override val input: String) : Day<Int>(input) {
     private var forest = matrixOf(input.lines().map { row -> row.toList().map(Char::digitToInt) })
 
-    override fun solve1(): String = forest.mapMatrixIndexed { i, j, tree -> forest.getRangesToEdge(i, j).any { it.isEmpty() || it.all { t -> t < tree } } }
-        .count { it }.toString()
+    override fun solve1(): Int = forest.mapMatrixIndexed { i, j, tree -> forest.getRangesToEdge(i, j).any { it.isEmpty() || it.all { t -> t < tree } } }
+        .count { it }
 
-    override fun solve2(): String = forest.mapMatrixIndexed { i, j, tree -> calcViewScore(i, j, tree) }.matrixMax().toString()
+    override fun solve2(): Int = forest.mapMatrixIndexed { i, j, tree -> calcViewScore(i, j, tree) }.matrixMax()
 
     private fun calcViewScore(row: Int, col: Int, tree: Int): Int = listOf('N', 'E', 'S', 'W').map { look(Point(col, row), it, tree) }.reduce(Int::times)
 

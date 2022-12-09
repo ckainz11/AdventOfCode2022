@@ -2,7 +2,7 @@ package days.day5
 
 import days.Day
 
-class Day5(override val input: String) : Day(input) {
+class Day5(override val input: String) : Day<String>(input) {
 
     private fun parseInput(input: String): Pair<Crane, List<Instruction>> {
         val (stacks, inst) = input.split("\n\n").map { it.lines() }

@@ -1,6 +1,6 @@
 package days
 
-abstract class Day(open val input: String) {
-    abstract fun solve1(): String
-    abstract fun solve2(): String
+abstract class Day<T>(open val input: String) {
+    abstract fun solve1(): T
+    abstract fun solve2(): T
 }
