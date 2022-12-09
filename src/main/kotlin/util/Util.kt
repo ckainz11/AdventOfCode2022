@@ -53,16 +53,18 @@ fun <T> Matrix<T>.getSurroundingCoordinates(row: Int, col: Int): List<Point> {
 fun <T> Matrix<T>.getSurroundingCoordinates(point: Point): List<Point> =
     this.getSurroundingCoordinates(point.y, point.x)
 
-data class Point(var x: Int, var y: Int)
+data class Point(var x: Int, var y: Int) {
+    operator fun plus(other: Point) = Point(other.x + x, other.y + y)
 
-fun Point.moveInDirection(direction: Char, step: Int = 1): Point = when (direction) {
-    'N' -> Point(this.x, this.y - step)
-    'S' -> Point(this.x, this.y + step)
-    'W' -> Point(this.x - step, this.y)
-    'E' -> Point(this.x + step, this.y)
-    else -> throw IllegalArgumentException("$direction is not a valid direction")
 }
 
+fun Point.moveInDirection(direction: Char, step: Int = 1): Point = when  {
+    direction == 'N' || direction == 'U' -> Point(this.x, this.y - step)
+    direction == 'S' || direction == 'D' -> Point(this.x, this.y + step)
+    direction == 'W' || direction == 'L' -> Point(this.x - step, this.y)
+    direction == 'E' || direction == 'R' -> Point(this.x + step, this.y)
+    else -> throw IllegalArgumentException("$direction is not a valid direction")
+}
 
 data class Point3(val x: Int, val y: Int, val z: Int)
 
