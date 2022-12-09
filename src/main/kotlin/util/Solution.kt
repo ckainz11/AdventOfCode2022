@@ -53,7 +53,7 @@ class Solution {
         var example1time = 0L
 
         try {
-            example1time = measureTimeMillis { actualExampleOutPart1 = dExample.solve1() }
+            example1time = measureTimeMillis { actualExampleOutPart1 = dExample.solve1().toString() }
             example1ResultState = if(actualExampleOutPart1 == exampleOutputPart1) ResultState.CORRECT else ResultState.WRONG
         } catch(e: NotImplementedError) {
             example1ResultState = ResultState.WARNING
@@ -67,7 +67,7 @@ class Solution {
         var example2time = 0L
 
         try {
-            example2time = measureTimeMillis { actualExampleOutPart2 = dExample.solve2() }
+            example2time = measureTimeMillis { actualExampleOutPart2 = dExample.solve2().toString() }
             example2ResultState = if (actualExampleOutPart2 == exampleOutputPart2) ResultState.CORRECT else ResultState.WRONG
         } catch(e: NotImplementedError) {
             example2ResultState = ResultState.WARNING
@@ -81,7 +81,7 @@ class Solution {
         var actualOutPart1: String
         var actual1time = 0L
         if(example1ResultState != ResultState.WARNING) {
-            actual1time = measureTimeMillis { actualOutPart1 = dReal.solve1() }
+            actual1time = measureTimeMillis { actualOutPart1 = dReal.solve1().toString() }
         } else {
             actualOutPart1 = "NOT IMPLEMENTED"
         }
@@ -90,7 +90,7 @@ class Solution {
         var actualOutPart2: String
         var actual2time = 0L
         if(example2ResultState != ResultState.WARNING) {
-             actual2time = measureTimeMillis { actualOutPart2 = dReal.solve2() }
+             actual2time = measureTimeMillis { actualOutPart2 = dReal.solve2().toString() }
         }  else {
             actualOutPart2 = "NOT IMPLEMENTED"
         }

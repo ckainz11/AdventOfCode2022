@@ -25,8 +25,8 @@ class DayFactory {
             9 to ::Day9
         )
 
-        fun getDayObject(day: Int, input: String): Day {
-            return days[day]?.invoke(input) ?: Day0("")
+        fun getDayObject(day: Int, input: String): Day<out Any> {
+            return days[day]?.invoke(input) ?: error("this day doesnt have a solution yet")
         }
     }
 
