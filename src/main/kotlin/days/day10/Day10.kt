@@ -10,14 +10,16 @@ class Day10(override val input: String) : Day<String>(input) {
 
         for (line in input.lines()) {
 
-            if (line.startsWith("noop")) cycleCount++.also { sum += increaseSum(cycleCount, x) }
+            if (line.startsWith("noop")) {
+                cycleCount++; sum += increaseSum(cycleCount, x)
+            }
             else {
                 repeat(2) {
-                    cycleCount++.also { sum += increaseSum(cycleCount, x) }
+                    cycleCount++
+                    sum += increaseSum(cycleCount, x)
                     if (it == 1) x += line.split(" ")[1].toInt()
                 }
             }
-
         }
 
         return sum.toString()
@@ -25,7 +27,7 @@ class Day10(override val input: String) : Day<String>(input) {
 
 
     private fun increaseSum(cycleCount: Int, x: Int): Int {
-        return if (cycleCount == 20 || cycleCount % 40 == 20) (cycleCount * x)
+        return if (cycleCount % 40 == 20) (cycleCount * x)
         else 0
     }
 
@@ -35,11 +37,11 @@ class Day10(override val input: String) : Day<String>(input) {
         var cycleCount = 0
         var x = 1
         for (line in input.lines()) {
-
             if (line.startsWith("noop")) {
                 image += drawPixel(cycleCount, x)
                 cycleCount++
-            } else {
+            }
+            else {
                 repeat(2) {
                     image += drawPixel(cycleCount, x)
                     cycleCount++
