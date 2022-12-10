@@ -29,8 +29,7 @@ class Day10(override val input: String) : Day<String>(input) {
     }
 
     private fun sumExecutor(cycleCount: Int, x: Int, sum: Int): Int =
-        if ((cycleCount + 1) % 40 == 20) sum + ((cycleCount + 1) * x) //off by one reeee
-        else sum
+        sum + if ((cycleCount + 1) % 40 == 20) (cycleCount + 1) * x else 0 //off by one reeee
 
     private fun drawExecutor(cycleCount: Int, x: Int, image: String): String =
         image + if (cycleCount % 40 in x - 1..x + 1) fill else space
