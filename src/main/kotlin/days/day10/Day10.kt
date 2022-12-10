@@ -1,56 +1,36 @@
 package days.day10
 
 import days.Day
+import javax.lang.model.type.PrimitiveType
 
 class Day10(override val input: String) : Day<String>(input) {
-    override fun solve1(): String {
-        var sum = 0
-        var cycleCount = 0
-        var x = 1
+    override fun solve1(): String = executeInstructions(0, ::sumExecutor).toString()
 
-        for (line in input.lines()) {
+    override fun solve2(): String = "\n\n${executeInstructions("", ::drawExecutor).chunked(40).joinToString("\n")}\n\n"
 
-            if (line.startsWith("noop")) {
-                cycleCount++
-                sum += increaseSum(cycleCount, x)
-            } else {
-                repeat(2) {
-                    cycleCount++
-                    sum += increaseSum(cycleCount, x)
-                    if (it == 1) x += line.split(" ")[1].toInt()
-                }
-            }
-        }
-
-        return sum.toString()
-    }
-
-
-    private fun increaseSum(cycleCount: Int, x: Int): Int {
-        return if (cycleCount % 40 == 20) (cycleCount * x)
-        else 0
-    }
-
-
-    override fun solve2(): String {
-        var image = ""
+    private fun <T> executeInstructions(defaultValue: T, executor: (Int, Int, T) -> T): T {
+        var result = defaultValue
         var cycleCount = 0
         var x = 1
         for (line in input.lines()) {
             if (line.startsWith("noop")) {
-                image += drawPixel(cycleCount, x)
+                result = executor(cycleCount, x, result)
                 cycleCount++
             } else {
                 repeat(2) {
-                    image += drawPixel(cycleCount, x)
+                    result = executor(cycleCount, x, result)
                     cycleCount++
                     if (it == 1) x += line.split(" ")[1].toInt()
                 }
             }
         }
-        return "\n\n${image.chunked(40).joinToString("\n")}\n\n"
+        return result
     }
 
-    private fun drawPixel(cycleCount: Int, spritePos: Int): Char =
-        if (cycleCount % 40 in spritePos - 1..spritePos + 1) '#' else '.'
+    private fun sumExecutor(cycleCount: Int, x: Int, sum: Int): Int =
+        if ((cycleCount + 1) % 40 == 20) sum + ((cycleCount + 1) * x) //off by one reeee
+        else sum
+
+    private fun drawExecutor(cycleCount: Int, x: Int, image: String): String =
+        image + if (cycleCount % 40 in x - 1..x + 1) '#' else '.'
 }
