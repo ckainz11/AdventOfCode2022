@@ -11,21 +11,17 @@ class Day10(override val input: String) : Day<String>(input) {
     override fun solve2(): String = "\n\n${executeInstructions("", ::drawExecutor).chunked(40).joinToString("\n")}\n\n"
 
     private fun <T> executeInstructions(defaultValue: T, executor: (Int, Int, T) -> T): T {
-        var result = defaultValue
         var cycleCount = 0
         var x = 1
 
-        fun noop(n: Int = 1) = repeat(n) { result = executor(cycleCount, x, result); cycleCount++ }
+        fun noop(n: Int = 1, startVal: T): T = (1 .. n).fold(startVal) { acc, _  -> executor(cycleCount, x, acc).also {cycleCount++} }
 
-        for (line in input.lines()) {
-            if (line.startsWith("noop"))
-                noop()
-            else {
-                noop(2)
-                x += line.split(" ")[1].toInt()
-            }
+        return input.lines().fold(defaultValue) { acc, s ->
+            if (s.startsWith("noop"))
+                noop(1, acc)
+            else
+                noop(2, acc).also { x += s.split(" ")[1].toInt() }
         }
-        return result
     }
 
     private fun sumExecutor(cycleCount: Int, x: Int, sum: Int): Int =
