@@ -12,8 +12,7 @@ class Day10(override val input: String) : Day<String>(input) {
 
             if (line.startsWith("noop")) {
                 cycleCount++; sum += increaseSum(cycleCount, x)
-            }
-            else {
+            } else {
                 repeat(2) {
                     cycleCount++
                     sum += increaseSum(cycleCount, x)
@@ -40,8 +39,7 @@ class Day10(override val input: String) : Day<String>(input) {
             if (line.startsWith("noop")) {
                 image += drawPixel(cycleCount, x)
                 cycleCount++
-            }
-            else {
+            } else {
                 repeat(2) {
                     image += drawPixel(cycleCount, x)
                     cycleCount++
@@ -49,19 +47,9 @@ class Day10(override val input: String) : Day<String>(input) {
                 }
             }
         }
-        return "\n\n$image\n\n"
+        return "\n\n${image.chunked(40).joinToString("\n")}\n\n"
     }
 
-    private fun drawPixel(cycleCount: Int, spritePos: Int): String {
-        val pixelPos = cycleCount % 40
-        val newLine = if (pixelPos == 0 && cycleCount != 0) "\n" else ""
-
-        for (i in -1..1) {
-            if (pixelPos == spritePos + i) {
-                return "$newLine#"
-            }
-        }
-        return "$newLine."
-    }
-
+    private fun drawPixel(cycleCount: Int, spritePos: Int): Char =
+        if (cycleCount % 40 in spritePos - 1..spritePos + 1) '#' else '.'
 }
