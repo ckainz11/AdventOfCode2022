@@ -1,7 +1,6 @@
 package days.day10
 
 import days.Day
-import javax.lang.model.type.PrimitiveType
 
 class Day10(override val input: String) : Day<String>(input) {
     override fun solve1(): String = executeInstructions(0, ::sumExecutor).toString()
