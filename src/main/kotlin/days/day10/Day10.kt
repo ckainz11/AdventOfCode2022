@@ -14,13 +14,11 @@ class Day10(override val input: String) : Day<String>(input) {
         var cycleCount = 0
         var x = 1
 
-        fun noop(n: Int = 1, startVal: T): T = (1 .. n).fold(startVal) { acc, _  -> executor(cycleCount, x, acc).also {cycleCount++} }
+        fun noop(startVal: T, n: Int = 1): T = (1 .. n).fold(startVal) { acc, _  -> executor(cycleCount, x, acc).also {cycleCount++} }
 
-        return input.lines().fold(defaultValue) { acc, s ->
-            if (s.startsWith("noop"))
-                noop(1, acc)
-            else
-                noop(2, acc).also { x += s.split(" ")[1].toInt() }
+        return input.lines().fold(defaultValue) { acc, line ->
+            if (line.startsWith("noop")) noop(acc)
+            else noop(acc, 2).also { x += line.split(" ")[1].toInt() }
         }
     }
 
