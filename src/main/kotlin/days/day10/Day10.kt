@@ -11,7 +11,8 @@ class Day10(override val input: String) : Day<String>(input) {
         for (line in input.lines()) {
 
             if (line.startsWith("noop")) {
-                cycleCount++; sum += increaseSum(cycleCount, x)
+                cycleCount++
+                sum += increaseSum(cycleCount, x)
             } else {
                 repeat(2) {
                     cycleCount++
