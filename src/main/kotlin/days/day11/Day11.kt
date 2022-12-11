@@ -11,10 +11,8 @@ class Day11(override val input: String) : Day<Long>(input) {
     private fun playRounds(n: Int, divide: Long): Long {
         val monkeys = input.split("\n\n").map { Monkey.of(it.lines()) }
         val common = monkeys.fold(1L) { acc, m -> acc * m.test.divisor }
-        repeat(n) {
-            monkeys.forEach { monkey ->
-                monkey.inspectItems(divide, common).forEach { (next, item) -> monkeys[next].items += item }
-            }
+        repeat(n) { _ ->
+            monkeys.forEach { it.inspectItems(divide, common) { index, item -> monkeys[index].items += item } }
         }
         return monkeys.business()
     }
@@ -26,9 +24,14 @@ class Day11(override val input: String) : Day<Long>(input) {
 
         var interactions = 0L
 
-        fun inspectItems(divide: Long, common: Long): List<Pair<Int, Long>> = items.map {
-            ((operation(it) / divide) % common).let { new -> (test.getNextMonkeyIndex(new) to new) }
-        }.also { interactions += it.size; items.clear() }
+        fun inspectItems(divide: Long, common: Long, throwTo: (Int, Long) -> Unit) {
+            items.forEach {
+                val new = ((operation(it) / divide) % common)
+                throwTo(test.getNextMonkeyIndex(new), new)
+            }
+            interactions += items.size
+            items.clear()
+        }
 
         companion object {
             fun of(lines: List<String>): Monkey {
