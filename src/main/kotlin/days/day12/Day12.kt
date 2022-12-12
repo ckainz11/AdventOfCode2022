@@ -27,14 +27,14 @@ class Day12(override val input: String) : Day<Int>(input) {
         val pathToHere = shortestPath[current] + 1
         var lowest = Int.MAX_VALUE
 
-        for (n in map.getAdjacentCoordinates(current)) {
-            val canStep = map[n] <= map[current] + 1
-            val shorterPath = shortestPath[n] == 0 || pathToHere < shortestPath[n]
+        map.getAdjacentCoordinates(current).forEach {
+            val canStep = map[it] <= map[current] + 1
+            val shorterPath = shortestPath[it].let { p -> p == 0 || pathToHere < p}
             if (canStep && shorterPath) {
-                shortestPath[n] = pathToHere
-                if (map[n] == goal)
+                shortestPath[it] = pathToHere
+                if (map[it] == goal)
                     return pathToHere
-                lowest = min(lowest, traverse(shortestPath, n, goal))
+                lowest = min(lowest, traverse(shortestPath, it, goal))
             }
 
         }
