@@ -8,7 +8,6 @@ class Day12(override val input: String) : Day<Int>(input) {
 
     private val map: Matrix<Int> = input.lines().map { row -> row.toList().map { it.heightValue() } }
     private val end = findEnd()
-
     override fun solve1(): Int = traverse(emptyMatrixOf(map.getRowNum(), map.getColNum(), 0), end, 27)
 
     override fun solve2(): Int = traverse(emptyMatrixOf(map.getRowNum(), map.getColNum(), 0), end, 26)
@@ -25,17 +24,17 @@ class Day12(override val input: String) : Day<Int>(input) {
     }
 
     private fun traverse(shortestPath: MutableMatrix<Int>, current: Point, goal: Int): Int {
-        val pathToHere = shortestPath[current.y][current.x] + 1
+        val pathToHere = shortestPath[current] + 1
         var lowest = Int.MAX_VALUE
 
         for (n in map.getAdjacentCoordinates(current)) {
-            val canStep = map[n.y][n.x] <= map[current.y][current.x] + 1
-            val shorterPath = shortestPath[n.y][n.x] == 0 || pathToHere < shortestPath[n.y][n.x]
+            val canStep = map[n] <= map[current] + 1
+            val shorterPath = shortestPath[n] == 0 || pathToHere < shortestPath[n]
             if (canStep && shorterPath) {
-                shortestPath[n.y][n.x] = pathToHere
-                if (map[n.y][n.x] == goal)
+                shortestPath[n] = pathToHere
+                if (map[n] == goal)
                     return pathToHere
-                lowest = min(lowest, traverse(shortestPath, Point(n.x, n.y), goal))
+                lowest = min(lowest, traverse(shortestPath, n, goal))
             }
 
         }

@@ -10,9 +10,18 @@ fun <T> matrixOf(vararg rows: List<T>): Matrix<T> = List(rows.size) { i -> rows[
 fun <T> matrixOf(rows: List<List<T>>): Matrix<T> = List(rows.size) { i -> rows[i] }
 fun <T> Matrix<T>.toMutableMatrix(): MutableMatrix<T> = this.map { it.toMutableList() }.toMutableList()
 fun <T> Matrix<T>.getColumn(col: Int): List<T> = getCol(this, col)
+operator fun <T> Matrix<T>.get(p: Point): T = this[p.y][p.x]
+operator fun <T> MutableMatrix<T>.set(p: Point, value: T) {
+    this[p.y][p.x] = value
+}
+
 fun <T, R> Matrix<T>.mapMatrix(transform: (T) -> R): Matrix<R> = this.map { it.map(transform) }
 fun <T, R> Matrix<T>.mapMatrixIndexed(transform: (Int, Int, T) -> R): Matrix<R> =
     this.mapIndexed { i, row -> row.mapIndexed { j, col -> transform(i, j, col) } }
+
+fun <T> Matrix<T>.matrixForEachIndexed(action: (Point, T) -> Unit) {
+    this.forEachIndexed { y, row -> row.forEachIndexed { x, col -> action(Point(x, y), col) } }
+}
 
 fun <T> Matrix<T>.matrixToString(): String = this.joinToString("\n") { it.joinToString(", ") }
 fun <T : Comparable<T>> Matrix<T>.matrixMax(): T = this.mapNotNull { it.maxOrNull() }.maxOrNull()!!
@@ -37,8 +46,11 @@ fun <T> Matrix<T>.getAdjacentCoordinates(row: Int, col: Int): List<Point> {
 fun <T> Matrix<T>.getAdjacentCoordinates(point: Point): List<Point> = getAdjacentCoordinates(point.y, point.x)
 fun <T> Matrix<T>.getRangesToEdge(point: Point) = getRangesToEdge(point.y, point.x)
 fun <T> Matrix<T>.getRangesToEdge(row: Int, col: Int) = getColumnToEdge(row, col) + getRowToEdge(row, col)
-fun <T> Matrix<T>.getColumnToEdge(row: Int, col: Int): List<List<T>> = this.getColumn(col).let { listOf(it.subList(0, row), it.subList(row + 1, it.size)) }
-fun <T> Matrix<T>.getRowToEdge(row: Int, col: Int): List<List<T>> = this[row].let { listOf(it.subList(0, col), it.subList(col + 1, it.size)) }
+fun <T> Matrix<T>.getColumnToEdge(row: Int, col: Int): List<List<T>> =
+    this.getColumn(col).let { listOf(it.subList(0, row), it.subList(row + 1, it.size)) }
+
+fun <T> Matrix<T>.getRowToEdge(row: Int, col: Int): List<List<T>> =
+    this[row].let { listOf(it.subList(0, col), it.subList(col + 1, it.size)) }
 
 
 fun <T> Matrix<T>.getSurroundingCoordinates(row: Int, col: Int): List<Point> {
@@ -58,7 +70,7 @@ data class Point(var x: Int, var y: Int) {
 
 }
 
-fun Point.moveInDirection(direction: Char, step: Int = 1): Point = when  {
+fun Point.moveInDirection(direction: Char, step: Int = 1): Point = when {
     direction == 'N' || direction == 'U' -> Point(this.x, this.y - step)
     direction == 'S' || direction == 'D' -> Point(this.x, this.y + step)
     direction == 'W' || direction == 'L' -> Point(this.x - step, this.y)
