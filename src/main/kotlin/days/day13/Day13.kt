@@ -29,13 +29,8 @@ class Day13(override val input: String) : Day<Int>(input) {
                 return when (other) {
                     is NumberPacket -> this compareTo other.toListPacket()
                     is ListPacket -> {
-                        val i = this.value.iterator()
-                        val j = other.value.iterator()
-                        while(i.hasNext() && j.hasNext()) {
-                            val cmp = i.next() compareTo j.next()
-                            if(cmp != 0) return cmp
-                        }
-                        i.hasNext() compareTo j.hasNext()
+                        this.value.zip(other.value) { a, b -> a compareTo b }.forEach { if (it != 0) return it }
+                        return this.value.size - other.value.size
                     }
                 }
             }
