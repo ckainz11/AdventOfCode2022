@@ -28,8 +28,15 @@ class Day13(override val input: String) : Day<Int>(input) {
             override infix fun compareTo(other: Packet): Int {
                 return when (other) {
                     is NumberPacket -> this compareTo other.toListPacket()
-                    is ListPacket -> this.value.zip(other.value) { a, b -> a compareTo b }.sum()
-                        .let { if (it != 0) it else this.value.size - other.value.size }
+                    is ListPacket -> {
+                        val i = this.value.iterator()
+                        val j = other.value.iterator()
+                        while(i.hasNext() && j.hasNext()) {
+                            val cmp = i.next() compareTo j.next()
+                            if(cmp != 0) return cmp
+                        }
+                        i.hasNext() compareTo j.hasNext()
+                    }
                 }
             }
         }
