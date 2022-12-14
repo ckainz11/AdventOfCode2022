@@ -7,8 +7,8 @@ import kotlin.math.sign
 
 class Day14(override val input: String) : Day<Int>(input) {
 
-    private val directions = listOf(Point(0,1), Point(-1, 1), Point(1,1))
-    private val sandOirigin = Point(500,0)
+    private val directions = listOf(Point(0, 1), Point(-1, 1), Point(1, 1))
+    private val sandOirigin = Point(500, 0)
     private val originalRocks = input.generateCave()
 
     override fun solve1(): Int {
@@ -41,11 +41,11 @@ class Day14(override val input: String) : Day<Int>(input) {
     override fun solve2(): Int {
         val occupied = originalRocks.toMutableSet()
 
-        val floor = (occupied.sortedByDescending { it.y }[1] + Point(0,2)).y
+        val floor = (occupied.sortedByDescending { it.y }[1] + Point(0, 2)).y
         var sandCount = 0
 
         fun dropSand(start: Point): Boolean {
-            if(occupied.contains(sandOirigin))
+            if (occupied.contains(sandOirigin))
                 return true
             for (dir in directions) {
                 val next = start + dir
@@ -74,13 +74,14 @@ class Day14(override val input: String) : Day<Int>(input) {
             }
         }
     }
+
     private fun String.generateCave() = lines().map { line ->
-            line.split(" -> ")
-                .windowed(2) { (a, b) ->
-                    generateRocks(
-                        a.split(",").let { (x, y) -> Point(x.toInt(), y.toInt()) },
-                        b.split(",").let { (x, y) -> Point(x.toInt(), y.toInt()) }
-                    )
-                }.flatten()
-        }.flatten().toMutableSet()
+        line.split(" -> ")
+            .windowed(2) { (a, b) ->
+                generateRocks(
+                    a.split(",").let { (x, y) -> Point(x.toInt(), y.toInt()) },
+                    b.split(",").let { (x, y) -> Point(x.toInt(), y.toInt()) }
+                )
+            }.flatten()
+    }.flatten().toMutableSet()
 }
