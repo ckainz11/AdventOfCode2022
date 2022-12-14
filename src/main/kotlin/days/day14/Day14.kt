@@ -3,8 +3,6 @@ package days.day14
 import days.Day
 import util.Point
 import util.lineTo
-import kotlin.math.abs
-import kotlin.math.sign
 
 class Day14(override val input: String) : Day<Int>(input) {
 
