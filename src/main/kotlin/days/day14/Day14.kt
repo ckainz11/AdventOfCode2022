@@ -2,13 +2,14 @@ package days.day14
 
 import days.Day
 import util.Point
+import util.lineTo
 import kotlin.math.abs
 import kotlin.math.sign
 
 class Day14(override val input: String) : Day<Int>(input) {
 
     private val directions = listOf(Point(0, 1), Point(-1, 1), Point(1, 1))
-    private val sandOirigin = Point(500, 0)
+    private val source = Point(500, 0)
     private val originalRocks = input.generateCave()
 
     override fun solve1(): Int {
@@ -32,7 +33,7 @@ class Day14(override val input: String) : Day<Int>(input) {
         }
 
         while (!fellOff) {
-            fellOff = dropSand(sandOirigin)
+            fellOff = dropSand(source)
         }
         return sandCount
     }
@@ -45,7 +46,7 @@ class Day14(override val input: String) : Day<Int>(input) {
         var sandCount = 0
 
         fun dropSand(start: Point): Boolean {
-            if (occupied.contains(sandOirigin))
+            if (occupied.contains(source))
                 return true
             for (dir in directions) {
                 val next = start + dir
@@ -60,28 +61,16 @@ class Day14(override val input: String) : Day<Int>(input) {
 
         var fellOff = false
         while (!fellOff) {
-            fellOff = dropSand(sandOirigin)
+            fellOff = dropSand(source)
         }
         return sandCount
-    }
-
-    private fun generateRocks(start: Point, end: Point) = buildList {
-        val xR = (end.x - start.x).let { Pair(it.sign, 0..abs(it)) }
-        val yR = (end.y - start.y).let { Pair(it.sign, 0..abs(it)) }
-        for (x in xR.second) {
-            for (y in yR.second) {
-                add(start + Point(x * xR.first, y * yR.first))
-            }
-        }
     }
 
     private fun String.generateCave() = lines().map { line ->
         line.split(" -> ")
             .windowed(2) { (a, b) ->
-                generateRocks(
-                    a.split(",").let { (x, y) -> Point(x.toInt(), y.toInt()) },
-                    b.split(",").let { (x, y) -> Point(x.toInt(), y.toInt()) }
-                )
+                a.split(",").let { (x, y) -> Point(x.toInt(), y.toInt()) } lineTo
+                b.split(",").let { (x, y) -> Point(x.toInt(), y.toInt()) }
             }.flatten()
     }.flatten().toMutableSet()
 }
