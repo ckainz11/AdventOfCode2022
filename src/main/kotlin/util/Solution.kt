@@ -1,9 +1,5 @@
 package util
 
-import days.day1.Day1
-import days.day2.Day2
-import days.day3.Day3
-import days.day4.Day4
 import util.ConsoleUtils.header
 import java.io.File
 import java.text.SimpleDateFormat
@@ -11,21 +7,6 @@ import java.util.*
 import kotlin.system.measureTimeMillis
 import com.github.kittinunf.fuel.Fuel
 import com.github.kittinunf.result.Result
-import days.day5.Day5
-import days.day6.Day6
-import days.day7.Day7
-import days.day8.Day8
-
-val days = mapOf(
-    1 to Day1(""),
-    2 to Day2(""),
-    3 to Day3(""),
-    4 to Day4(""),
-    5 to Day5(""),
-    6 to Day6(""),
-    7 to Day7(""),
-    8 to Day8("")
-)
 
 class Solution {
     fun greet(): Int {
@@ -37,16 +18,14 @@ class Solution {
     fun solve(day: Int) {
         printDayHeader(day)
 
-
-
         val exampleInput = getInputFile(day, true)
         val exampleOutputPart1 = getExampleOut(day, 1)
         val exampleOutputPart2 = getExampleOut(day, 2)
         val realInput = getInputFile(day, false)
 
-
-
         val dExample = DayFactory.getDayObject(day, exampleInput)
+
+
         //Example Part 1
         var example1ResultState: ResultState
         var actualExampleOutPart1: String
@@ -77,6 +56,7 @@ class Solution {
 
         val dReal = DayFactory.getDayObject(day, realInput)
 
+
         //Real Part 1
         var actualOutPart1: String
         var actual1time = 0L
@@ -85,6 +65,7 @@ class Solution {
         } else {
             actualOutPart1 = "NOT IMPLEMENTED"
         }
+
 
         //Real Part 2
         var actualOutPart2: String
