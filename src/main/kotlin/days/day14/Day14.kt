@@ -12,7 +12,7 @@ class Day14(override val input: String) : Day<Int>(input) {
 
     override fun solve1(): Int {
         val occupied = originalRocks.toMutableSet()
-        val voidBorder = occupied.sortedByDescending { it.y }[1].y
+        val voidBorder = occupied.maxOf { it.y }
         var sandCount = 0
         var fellOff = false
 
