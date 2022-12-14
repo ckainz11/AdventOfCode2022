@@ -2,6 +2,7 @@ package util
 
 import java.lang.IllegalArgumentException
 import java.util.*
+import kotlin.math.sign
 
 typealias Matrix<T> = List<List<T>>
 typealias MutableMatrix<T> = MutableList<MutableList<T>>
@@ -69,7 +70,17 @@ data class Point(var x: Int, var y: Int) {
     operator fun plus(other: Point) = Point(other.x + x, other.y + y)
 
 }
-
+infix fun Point.lineTo(other: Point): List<Point> {
+    val line = mutableListOf<Point>()
+    val xR = (other.x - x).let { Pair(it.sign, 0..kotlin.math.abs(it)) }
+    val yR = (other.y - y).let { Pair(it.sign, 0..kotlin.math.abs(it)) }
+    for (x in xR.second) {
+        for (y in yR.second) {
+            line.add(this + Point(x * xR.first, y * yR.first))
+        }
+    }
+    return line
+}
 fun Point.moveInDirection(direction: Char, step: Int = 1): Point = when {
     direction == 'N' || direction == 'U' -> Point(this.x, this.y - step)
     direction == 'S' || direction == 'D' -> Point(this.x, this.y + step)
