@@ -9,7 +9,7 @@ class Day14(override val input: String) : Day<Int>(input) {
 
     private val directions = listOf(Point(0,1), Point(-1, 1), Point(1,1))
     private val sandOirigin = Point(500,0)
-    private val originalRocks = input.genrateCave()
+    private val originalRocks = input.generateCave()
 
     override fun solve1(): Int {
         val occupied = originalRocks.toMutableSet()
@@ -74,7 +74,7 @@ class Day14(override val input: String) : Day<Int>(input) {
             }
         }
     }
-    private fun String.genrateCave() = lines().map { line ->
+    private fun String.generateCave() = lines().map { line ->
             line.split(" -> ")
                 .windowed(2) { (a, b) ->
                     generateRocks(
