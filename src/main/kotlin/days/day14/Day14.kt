@@ -2,26 +2,26 @@ package days.day14
 
 import days.Day
 import util.Point
-import util.moveInDirection
 import kotlin.math.abs
 import kotlin.math.sign
 
 class Day14(override val input: String) : Day<Int>(input) {
 
+    private val directions = listOf(Point(0,1), Point(-1, 1), Point(1,1))
+    private val sandOirigin = Point(500,0)
+    private val originalRocks = input.genrateCave()
 
     override fun solve1(): Int {
-        val occupied = input.genrateCave()
-
-        val voidBorder = occupied.sortedByDescending { it.y }[1]
+        val occupied = originalRocks.toMutableSet()
+        val voidBorder = occupied.sortedByDescending { it.y }[1].y
         var sandCount = 0
         var fellOff = false
 
         fun dropSand(start: Point): Boolean {
-            val directions = listOf("D", "DL", "DR")
-            if (start.y >= voidBorder.y)
+            if (start.y >= voidBorder)
                 return true
             for (dir in directions) {
-                val next = dir.fold(start) { acc, d -> acc.moveInDirection(d) }
+                val next = start + dir
                 if (!occupied.contains(next)) {
                     return dropSand(next)
                 }
@@ -32,27 +32,24 @@ class Day14(override val input: String) : Day<Int>(input) {
         }
 
         while (!fellOff) {
-            fellOff = dropSand(Point(500, 0))
+            fellOff = dropSand(sandOirigin)
         }
         return sandCount
     }
 
 
     override fun solve2(): Int {
-        val occupied = input.genrateCave()
+        val occupied = originalRocks.toMutableSet()
 
-        val floor = occupied.sortedByDescending { it.y }[1] + Point(0,2)
+        val floor = (occupied.sortedByDescending { it.y }[1] + Point(0,2)).y
         var sandCount = 0
-        var fellOff = false
-        val sandOirigin = Point(500,0)
 
         fun dropSand(start: Point): Boolean {
-            val directions = listOf("D", "DL", "DR")
             if(occupied.contains(sandOirigin))
                 return true
             for (dir in directions) {
-                val next = dir.fold(start) { acc, d -> acc.moveInDirection(d) }
-                if (!occupied.contains(next) && next.y < floor.y) {
+                val next = start + dir
+                if (!occupied.contains(next) && next.y < floor) {
                     return dropSand(next)
                 }
             }
@@ -61,6 +58,7 @@ class Day14(override val input: String) : Day<Int>(input) {
             return false
         }
 
+        var fellOff = false
         while (!fellOff) {
             fellOff = dropSand(sandOirigin)
         }
