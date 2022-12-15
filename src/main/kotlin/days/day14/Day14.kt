@@ -2,7 +2,6 @@ package days.day14
 
 import days.Day
 import util.Point
-import util.lineTo
 
 class Day14(override val input: String) : Day<Int>(input) {
 
