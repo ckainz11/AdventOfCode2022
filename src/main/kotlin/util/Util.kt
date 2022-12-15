@@ -2,6 +2,7 @@ package util
 
 import java.lang.IllegalArgumentException
 import java.util.*
+import kotlin.math.abs
 import kotlin.math.sign
 
 typealias Matrix<T> = List<List<T>>
@@ -68,24 +69,27 @@ fun <T> Matrix<T>.getSurroundingCoordinates(point: Point): List<Point> =
 
 data class Point(var x: Int, var y: Int) {
     operator fun plus(other: Point) = Point(other.x + x, other.y + y)
+    operator fun minus(other: Point) = Point(other.x - x, other.y - y)
+    fun manhattan(other: Point): Int = abs(this.x - other.x) + abs(this.y - other.y)
 
-}
-infix fun Point.lineTo(other: Point): List<Point> {
-    val line = mutableListOf<Point>()
-    val xR = (other.x - x).let { Pair(it.sign, 0..kotlin.math.abs(it)) }
-    val yR = (other.y - y).let { Pair(it.sign, 0..kotlin.math.abs(it)) }
-    for (x in xR.second) {
-        for (y in yR.second) {
-            line.add(this + Point(x * xR.first, y * yR.first))
+    infix fun lineTo(other: Point): List<Point> {
+        val line = mutableListOf<Point>()
+        val xR = (other.x - x).let { Pair(it.sign, 0..kotlin.math.abs(it)) }
+        val yR = (other.y - y).let { Pair(it.sign, 0..kotlin.math.abs(it)) }
+        for (x in xR.second) {
+            for (y in yR.second) {
+                line.add(this + Point(x * xR.first, y * yR.first))
+            }
         }
+        return line
     }
-    return line
 }
-fun Point.moveInDirection(direction: Char, step: Int = 1): Point = when {
-    direction == 'N' || direction == 'U' -> Point(this.x, this.y - step)
-    direction == 'S' || direction == 'D' -> Point(this.x, this.y + step)
-    direction == 'W' || direction == 'L' -> Point(this.x - step, this.y)
-    direction == 'E' || direction == 'R' -> Point(this.x + step, this.y)
+
+fun Point.moveInDirection(direction: Char, step: Int = 1): Point = when (direction) {
+    'N', 'U' -> Point(this.x, this.y - step)
+    'S', 'D' -> Point(this.x, this.y + step)
+    'W', 'L' -> Point(this.x - step, this.y)
+    'E', 'R' -> Point(this.x + step, this.y)
     else -> throw IllegalArgumentException("$direction is not a valid direction")
 }
 
@@ -198,3 +202,11 @@ infix fun IntRange.overlaps(other: IntRange): Boolean =
     first in other || last in other || other.first in this || other.last in this
 
 infix fun IntRange.containsRange(other: IntRange): Boolean = other.first in this && other.last in this
+
+
+fun String.allInts() = allIntsInString(this)
+fun allIntsInString(line: String): List<Int> {
+    return """-?\d+""".toRegex().findAll(line)
+        .map { it.value.toInt() }
+        .toList()
+}
