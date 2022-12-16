@@ -58,8 +58,6 @@ class Day16(override val input: String) : Day<Int>(input) {
             it.keys.map { key -> if (valves[key]?.flowRate == 0) key else "" }
                 .forEach { toRemove -> if (toRemove != "") it.remove(toRemove) }
         }
-        //remove all paths that lead back to the starting room
-        shortestPaths.values.forEach { it.remove("AA") }
         return shortestPaths
     }
 
