@@ -203,6 +203,7 @@ infix fun IntRange.overlaps(other: IntRange): Boolean =
 
 infix fun IntRange.containsRange(other: IntRange): Boolean = other.first in this && other.last in this
 
+infix fun IntRange.adjoint(other: IntRange): Boolean = this.last + 1 == other.first || other.last + 1 == this.first
 
 fun String.allInts() = allIntsInString(this)
 fun allIntsInString(line: String): List<Int> {
