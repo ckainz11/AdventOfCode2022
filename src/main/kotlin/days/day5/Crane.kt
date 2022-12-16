@@ -10,12 +10,10 @@ class Crane(private val stacks: Array<ArrayDeque<Char>>) {
     }
 
     private fun move9001(instruction: Instruction) {
-        val toMove = emptyList<Char>().toMutableList()
+        val index = stacks[instruction.end - 1].size
         repeat(instruction.amount) {
-            toMove.add(stacks[instruction.start - 1].removeLast())
-        }
-        for(move in toMove.reversed()) {
-            stacks[instruction.end - 1].addLast(move)
+            val toMove = (stacks[instruction.start - 1].removeLast())
+            stacks[instruction.end - 1].add(index, toMove)
         }
     }
 
