@@ -83,6 +83,13 @@ data class Point(var x: Int, var y: Int) {
         }
         return line
     }
+
+    companion object {
+        val LEFT = Point(-1, 0)
+        val RIGHT = Point(1, 0)
+        val UP = Point(0, 1)
+        val DOWN = Point(0, -1)
+    }
 }
 
 fun Point.moveInDirection(direction: Char, step: Int = 1): Point = when (direction) {
