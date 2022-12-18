@@ -8,7 +8,7 @@ class Day18(override val input: String) : Day<Int>(input) {
 
     private val cubes = input.lines().map { it.allInts().let { (x, y, z) -> Point3(x, y, z) } }.toSet()
 
-    override fun solve1(): Int = cubes.sumOf { 6 - it.getAdjacents3().count { c -> c in cubes } }
+    override fun solve1(): Int = cubes.sumOf { 6 - it.neighbors().count { c -> c in cubes } }
 
     override fun solve2(): Int {
         val minPoint = Point3(cubes.minOf { it.x - 1 }, cubes.minOf { it.y - 1 }, cubes.minOf { it.z - 1 })
@@ -24,7 +24,7 @@ class Day18(override val input: String) : Day<Int>(input) {
         while (toVisit.isNotEmpty()) {
             val c = toVisit.removeFirst()
             if (c !in visited) {
-                c.getAdjacents3()
+                c.neighbors()
                     .filter { it.inBounds() }
                     .forEach { if (it in cubes) sides++ else toVisit += it }
                 visited += c
@@ -32,15 +32,4 @@ class Day18(override val input: String) : Day<Int>(input) {
         }
         return sides
     }
-
-    private val offsets = listOf(-1, 1)
-    private fun Point3.getAdjacents3(): List<Point3> = buildList {
-        offsets.forEach {
-            add(Point3(x + it, y, z))
-            add(Point3(x, y + it, z))
-            add(Point3(x, y, z + it))
-        }
-    }
-
-
 }
