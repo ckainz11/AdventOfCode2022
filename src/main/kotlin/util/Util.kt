@@ -70,7 +70,9 @@ fun <T> Matrix<T>.getSurroundingCoordinates(point: Point): List<Point> =
 data class Point(var x: Int, var y: Int) {
     operator fun plus(other: Point) = Point(other.x + x, other.y + y)
     operator fun minus(other: Point) = Point(other.x - x, other.y - y)
-    fun manhattan(other: Point): Int = abs(this.x - other.x) + abs(this.y - other.y)
+    operator fun times(n: Int) = Point(x * n, y * n)
+
+    fun mDist(other: Point): Int = abs(this.x - other.x) + abs(this.y - other.y)
 
     infix fun lineTo(other: Point): List<Point> {
         val line = mutableListOf<Point>()
@@ -89,18 +91,33 @@ data class Point(var x: Int, var y: Int) {
         val RIGHT = Point(1, 0)
         val UP = Point(0, 1)
         val DOWN = Point(0, -1)
+
+        val directions = listOf(LEFT, RIGHT, UP, DOWN)
     }
 }
 
 fun Point.moveInDirection(direction: Char, step: Int = 1): Point = when (direction) {
-    'N', 'U' -> Point(this.x, this.y - step)
-    'S', 'D' -> Point(this.x, this.y + step)
-    'W', 'L' -> Point(this.x - step, this.y)
-    'E', 'R' -> Point(this.x + step, this.y)
+    'N', 'U' -> this + (Point.UP * step)
+    'S', 'D' -> this + (Point.DOWN * step)
+    'W', 'L' -> this + (Point.LEFT * step)
+    'E', 'R' -> this + (Point.RIGHT * step)
     else -> throw IllegalArgumentException("$direction is not a valid direction")
 }
 
-data class Point3(val x: Int, val y: Int, val z: Int)
+data class Point3(val x: Int, val y: Int, val z: Int) {
+    operator fun plus(other: Point3) = Point3(other.x + x, other.y + y, other.z + z)
+    operator fun minus(other: Point3) = Point3(other.x - x, other.y - y, other.z -z)
+    operator fun times(n: Int) = Point3(x * n, y * n, z * n)
+
+    private val offsets = listOf(-1, 1)
+    fun neighbors(): List<Point3> = buildList {
+        offsets.forEach {
+            add(Point3(x + it, y, z))
+            add(Point3(x, y + it, z))
+            add(Point3(x, y, z + it))
+        }
+    }
+}
 
 fun String.hexToBinaryString(): String {
     val num = this.uppercase(Locale.getDefault())
