@@ -109,14 +109,11 @@ data class Point3(val x: Int, val y: Int, val z: Int) {
     operator fun minus(other: Point3) = Point3(other.x - x, other.y - y, other.z -z)
     operator fun times(n: Int) = Point3(x * n, y * n, z * n)
 
-    private val offsets = listOf(-1, 1)
-    fun neighbors(): List<Point3> = buildList {
-        offsets.forEach {
-            add(Point3(x + it, y, z))
-            add(Point3(x, y + it, z))
-            add(Point3(x, y, z + it))
-        }
-    }
+    fun neighbors(): List<Point3> = listOf (
+            Point3(x + 1, y, z), Point3(x - 1, y, z),
+            Point3(x, y + 1, z), Point3(x, y - 1, z),
+            Point3(x, y, z + 1), Point3(x, y, z - 1),
+    )
 }
 
 fun String.hexToBinaryString(): String {
