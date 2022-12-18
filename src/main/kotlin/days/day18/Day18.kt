@@ -11,12 +11,12 @@ class Day18(override val input: String) : Day<Int>(input) {
     override fun solve1(): Int = cubes.sumOf { 6 - it.getAdjacents3().count { c -> c in cubes } }
 
     override fun solve2(): Int {
-        val minPoint = Point3(cubes.minOf { it.x }, cubes.minOf { it.y }, cubes.minOf { it.z })
-        val maxPoint = Point3(cubes.maxOf { it.x }, cubes.maxOf { it.y }, cubes.maxOf { it.z })
+        val minPoint = Point3(cubes.minOf { it.x - 1 }, cubes.minOf { it.y - 1 }, cubes.minOf { it.z - 1 })
+        val maxPoint = Point3(cubes.maxOf { it.x + 1 }, cubes.maxOf { it.y + 1 }, cubes.maxOf { it.z + 1 })
 
-        fun Point3.inBounnds() = x in minPoint.x - 1..maxPoint.x + 1 &&
-                y in minPoint.y - 1..maxPoint.y + 1 &&
-                z in minPoint.z - 1..maxPoint.z + 1
+        fun Point3.inBounnds() = x in minPoint.x..maxPoint.x &&
+                y in minPoint.y..maxPoint.y &&
+                z in minPoint.z..maxPoint.z
 
         val toVisit = mutableListOf(minPoint)
         val visited = mutableSetOf<Point3>()
