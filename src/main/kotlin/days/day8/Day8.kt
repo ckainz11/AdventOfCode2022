@@ -11,10 +11,10 @@ class Day8(override val input: String) : Day<Int>(input) {
 
     override fun solve2(): Int = forest.mapMatrixIndexed { i, j, tree -> calcViewScore(i, j, tree) }.matrixMax()
 
-    private fun calcViewScore(row: Int, col: Int, tree: Int): Int = listOf('N', 'E', 'S', 'W').map { look(Point(col, row), it, tree) }.reduce(Int::times)
+    private fun calcViewScore(row: Int, col: Int, tree: Int): Int = Point.directions.map { look(Point(col, row), it, tree) }.reduce(Int::times)
 
-    private fun look(point: Point, direction: Char, tree: Int): Int {
-        val next = point.moveInDirection(direction)
+    private fun look(point: Point, direction: Point, tree: Int): Int {
+        val next = point + direction
         return try {
             if (forest[next.y][next.x] < tree)
                 1 + look(next, direction, tree)
