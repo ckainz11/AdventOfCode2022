@@ -16,7 +16,7 @@ class Day8(override val input: String) : Day<Int>(input) {
     private fun look(point: Point, direction: Point, tree: Int): Int {
         val next = point + direction
         return try {
-            if (forest[next.y][next.x] < tree)
+            if (forest[next] < tree)
                 1 + look(next, direction, tree)
             else 1
         } catch (ex: IndexOutOfBoundsException) {
