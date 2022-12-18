@@ -49,7 +49,7 @@ class Day15(override val input: String) : Day<Long>(input) {
 
     data class SensorBeacon(val sensor: Point, val beacon: Point) {
         fun getCoverageInRow(row: Int): IntRange? {
-            val dist = sensor.manhattan(beacon)
+            val dist = sensor.mDist(beacon)
             val dy = abs(row - sensor.y)
             return if (dy < dist)
                 (dist - dy).let { -it + sensor.x..it + sensor.x }
