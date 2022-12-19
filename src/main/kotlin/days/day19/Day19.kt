@@ -22,43 +22,62 @@ class Day19(override val input: String) : Day<Int>(input) {
         }
     }
 
-    override fun solve1(): Int {
-        return blueprints.sumOf {
-            best = 0
-            it.id * simulate(it, SimulationState(0, 0, 0, 0, 0, 1, 0, 0, 0))
-        }
-    }
+    override fun solve1(): Int = blueprints.sumOf { BluePrintSimulator(it, 24).getMostGeodes() * it.id }
 
-    override fun solve2(): Int {
-        maxMinutes = 32
-        return blueprints.take(3)
-            .map {
-                best = 0
-                simulate(it, SimulationState(0, 0, 0, 0, 0, 1, 0, 0, 0))
+    override fun solve2(): Int = blueprints.take(3).map { BluePrintSimulator(it, 32).getMostGeodes() }.reduce(Int::times)
+
+    data class Blueprint(val id: Int, val costs: List<RobotCost>)
+
+    data class RobotCost(val ore: Int = 0, val clay: Int = 0, val obsidian: Int = 0)
+
+    class BluePrintSimulator(private val blueprint: Blueprint, private val duration: Int) {
+
+        private var best = 0
+
+        fun getMostGeodes(): Int {
+            return simulate(SimulationState(0, 0, 0, 0, 0, 1, 0, 0, 0))
+        }
+
+        private fun simulate(state: SimulationState): Int {
+            if (state.isOver()) {
+                best = max(state.geodes, best)
+                return state.geodes
             }
-            .reduce(Int::times)
-    }
 
-    private var best = 0
-    private var maxMinutes = 24
+            if (state.pruneable()) {
+                return 0
+            }
 
+            var max = 0
 
-    private fun simulate(blueprint: Blueprint, state: SimulationState): Int {
-        if (state.minute >= maxMinutes) {
-            best = max(state.geodes, best)
-            return state.geodes
+            if (state.obsidianProd > 0) {
+                val result = simulate(buildGeodeBot(state))
+                max = max(result, max)
+            }
+
+            if (state.clayProd > 0) {
+                val result = simulate(buildObsidianBot(state))
+                max = max(result, max)
+            }
+
+            if (state.oreProd > 0) {
+                val result = simulate(buildClayBot(state))
+                max = max(result, max)
+            }
+
+            if (state.oreProd > 0) {
+                val result = simulate(buildOreBot(state))
+                max = max(result, max)
+            }
+
+            return max
         }
 
-        val roundsLeft = maxMinutes - state.minute
-        val canProduce = state.geodes + (0 until roundsLeft).sumOf { state.geodesProd + it }
-        if (canProduce < best) {
-            return 0
-        }
+        private fun SimulationState.pruneable(): Boolean = geodes + (0 until duration - minute).sumOf { geodesProd + it } < best
 
-        var max = 0
+        private fun SimulationState.isOver(): Boolean = minute >= duration
 
-        //build geode bot
-        if (state.obsidianProd > 0) {
+        private fun buildGeodeBot(state: SimulationState): SimulationState {
             val oresNeeded = max(0, blueprint.costs[3].ore - state.ore)
             val obsidiansNeeded = max(0, blueprint.costs[3].obsidian - state.obsidian)
             val wait = if (oresNeeded == 0 && obsidiansNeeded == 0) {
@@ -69,20 +88,16 @@ class Day19(override val input: String) : Day<Int>(input) {
                     ceil(obsidiansNeeded.toFloat() / state.obsidianProd.toFloat()).toInt(),
                 ) + 1
             }
-            val stateAfterBuilt = state.progress(wait).let {
+            return state.progress(wait).let {
                 it.copy(
                     ore = it.ore - blueprint.costs[3].ore,
                     obsidian = it.obsidian - blueprint.costs[3].obsidian,
                     geodesProd = it.geodesProd + 1
                 )
             }
-
-            val result = simulate(blueprint, stateAfterBuilt)
-            max = max(result, max)
         }
 
-        //build obsidian bot
-        if (state.clayProd > 0) {
+        private fun buildObsidianBot(state: SimulationState): SimulationState {
             val oresNeeded = max(0, blueprint.costs[2].ore - state.ore)
             val clayNeeded = max(0, blueprint.costs[2].clay - state.clay)
 
@@ -94,89 +109,70 @@ class Day19(override val input: String) : Day<Int>(input) {
                     ceil(clayNeeded.toFloat() / state.clayProd.toFloat()).toInt()
                 ) + 1
             }
-            val stateAfterBuilt = state.progress(wait).let {
+            return state.progress(wait).let {
                 it.copy(
                     ore = it.ore - blueprint.costs[2].ore,
                     clay = it.clay - blueprint.costs[2].clay,
                     obsidianProd = it.obsidianProd + 1
                 )
             }
-            val result = simulate(blueprint, stateAfterBuilt)
-            max = max(result, max)
         }
 
-        //build clay bot
-        if (state.oreProd > 0) {
+        private fun buildClayBot(state: SimulationState): SimulationState {
             val oresNeeded = max(0, blueprint.costs[1].ore - state.ore)
 
             val wait = if (oresNeeded == 0)
                 1
             else ceil(oresNeeded.toFloat() / state.oreProd.toFloat()).toInt() + 1
 
-            val stateAfterBuilt = state.progress(wait).let {
+            return state.progress(wait).let {
                 it.copy(
                     ore = it.ore - blueprint.costs[1].ore,
                     clayProd = it.clayProd + 1
                 )
             }
-            val result = simulate(blueprint, stateAfterBuilt)
-            max = max(result, max)
         }
 
-        //ore
-        if (state.oreProd > 0) {
+        private fun buildOreBot(state: SimulationState): SimulationState {
             val oresNeeded = max(0, blueprint.costs[0].ore - state.ore)
 
             val wait = if (oresNeeded == 0)
                 1
             else ceil(oresNeeded.toFloat() / state.oreProd.toFloat()).toInt() + 1
 
-            val stateAfterBuilt = state.progress(wait).let {
+            return state.progress(wait).let {
                 it.copy(
                     ore = it.ore - blueprint.costs[0].ore,
                     oreProd = it.oreProd + 1
                 )
             }
-            val result = simulate(blueprint, stateAfterBuilt)
-            max = max(result, max)
         }
 
-        return max
-    }
-
-
-    //0 - ORE
-    //1 - CLAY
-    //2 - OBSIDIAN
-    //3 - GEODE
-
-    data class SimulationState(
-        val minute: Int,
-        val ore: Int,
-        val clay: Int,
-        val obsidian: Int,
-        val geodes: Int,
-        val oreProd: Int,
-        val clayProd: Int,
-        val obsidianProd: Int,
-        val geodesProd: Int,
-    )
-
-    //returns the next simulation state after specified minutes have passed
-    private fun SimulationState.progress(minutes: Int): SimulationState {
-        val time = min(maxMinutes - this.minute, minutes)
-
-        return this.copy(
-            minute = minute + time,
-            ore = ore + oreProd * time,
-            clay = clay + clayProd * time,
-            obsidian = obsidian + obsidianProd * time,
-            geodes = geodes + geodesProd * time
+        data class SimulationState(
+            val minute: Int,
+            val ore: Int,
+            val clay: Int,
+            val obsidian: Int,
+            val geodes: Int,
+            val oreProd: Int,
+            val clayProd: Int,
+            val obsidianProd: Int,
+            val geodesProd: Int,
         )
+
+        //returns the next simulation state after specified minutes have passed
+        private fun SimulationState.progress(minutes: Int): SimulationState {
+            val time = min(duration - this.minute, minutes)
+
+            return this.copy(
+                minute = minute + time,
+                ore = ore + oreProd * time,
+                clay = clay + clayProd * time,
+                obsidian = obsidian + obsidianProd * time,
+                geodes = geodes + geodesProd * time
+            )
+        }
     }
 
-    data class Blueprint(val id: Int, val costs: List<RobotCost>)
-
-    data class RobotCost(val ore: Int = 0, val clay: Int = 0, val obsidian: Int = 0)
 
 }
