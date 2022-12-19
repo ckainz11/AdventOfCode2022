@@ -11,6 +11,7 @@ import days.day15.Day15
 import days.day16.Day16
 import days.day17.Day17
 import days.day18.Day18
+import days.day19.Day19
 import days.day2.Day2
 import days.day3.Day3
 import days.day4.Day4
@@ -40,7 +41,8 @@ class DayFactory {
             15 to ::Day15,
             16 to ::Day16,
             17 to ::Day17,
-            18 to ::Day18
+            18 to ::Day18,
+            19 to ::Day19
         )
 
         fun getDayObject(day: Int, input: String): Day<out Any> {
