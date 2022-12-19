@@ -34,6 +34,10 @@ class Day19(override val input: String) : Day<Int>(input) {
 
         private var best = 0
 
+        private val mostExpensiveOreCost = blueprint.costs.maxOf { it.ore }
+        private val mostExpensiveObsidianCost = blueprint.costs.maxOf { it.obsidian }
+        private val mostExpensiveClayCost = blueprint.costs.maxOf { it.clay }
+
         fun getMostGeodes(): Int {
             return simulate(SimulationState(0, 0, 0, 0, 0, 1, 0, 0, 0))
         }
@@ -55,17 +59,17 @@ class Day19(override val input: String) : Day<Int>(input) {
                 max = max(result, max)
             }
 
-            if (state.clayProd > 0) {
+            if (state.clayProd > 0 && state.obsidianProd < mostExpensiveObsidianCost) {
                 val result = simulate(buildObsidianBot(state))
                 max = max(result, max)
             }
 
-            if (state.oreProd > 0) {
+            if (state.oreProd > 0 && state.clayProd < mostExpensiveClayCost) {
                 val result = simulate(buildClayBot(state))
                 max = max(result, max)
             }
 
-            if (state.oreProd > 0) {
+            if (state.oreProd in 1 until mostExpensiveOreCost) {
                 val result = simulate(buildOreBot(state))
                 max = max(result, max)
             }
