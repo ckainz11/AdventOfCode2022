@@ -24,7 +24,8 @@ class Day19(override val input: String) : Day<Int>(input) {
 
     override fun solve1(): Int = blueprints.sumOf { BluePrintSimulator(it, 24).getMostGeodes() * it.id }
 
-    override fun solve2(): Int = blueprints.take(3).map { BluePrintSimulator(it, 32).getMostGeodes() }.reduce(Int::times)
+    override fun solve2(): Int =
+        blueprints.take(3).map { BluePrintSimulator(it, 32).getMostGeodes() }.reduce(Int::times)
 
     data class Blueprint(val id: Int, val costs: List<RobotCost>)
 
@@ -34,14 +35,14 @@ class Day19(override val input: String) : Day<Int>(input) {
 
         private var best = 0
 
+        private val initialState = SimulationState(0, 0, 0, 0, 0, 1, 0, 0, 0)
+
         //no need to buy extra robots of one resource, if we are already producing as much as the most expensive robot costs
         private val highestOreCost = blueprint.costs.maxOf { it.ore }
         private val highestClayCost = blueprint.costs.maxOf { it.clay }
         private val highestObsidianCost = blueprint.costs.maxOf { it.obsidian }
 
-        fun getMostGeodes(): Int {
-            return simulate(SimulationState(0, 0, 0, 0, 0, 1, 0, 0, 0))
-        }
+        fun getMostGeodes(): Int = simulate(initialState)
 
         private fun simulate(state: SimulationState): Int {
             if (state.isOver()) {
@@ -49,36 +50,28 @@ class Day19(override val input: String) : Day<Int>(input) {
                 return state.geodes
             }
 
-            if (state.pruneable()) {
+            if (state.pruneable())
                 return 0
-            }
 
             var max = 0
 
-            if (state.obsidianProd > 0) {
-                val result = simulate(buildGeodeBot(state))
-                max = max(result, max)
-            }
+            if (state.obsidianProd > 0)
+                max = max(max, simulate(buildGeodeBot(state)))
 
-            if (state.clayProd > 0 && state.obsidianProd < highestObsidianCost) {
-                val result = simulate(buildObsidianBot(state))
-                max = max(result, max)
-            }
+            if (state.clayProd > 0 && state.obsidianProd < highestObsidianCost)
+                max = max(max, simulate(buildObsidianBot(state)))
 
-            if (state.oreProd > 0 && state.clayProd < highestClayCost) {
-                val result = simulate(buildClayBot(state))
-                max = max(result, max)
-            }
+            if (state.oreProd > 0 && state.clayProd < highestClayCost)
+                max = max(max, simulate(buildClayBot(state)))
 
-            if (state.oreProd in 1 until highestOreCost) {
-                val result = simulate(buildOreBot(state))
-                max = max(result, max)
-            }
+            if (state.oreProd in 1 until highestOreCost)
+                max = max(max, simulate(buildOreBot(state)))
 
             return max
         }
 
-        private fun SimulationState.pruneable(): Boolean = geodes + (0 until duration - minute).sumOf { geodesProd + it } < best
+        private fun SimulationState.pruneable(): Boolean =
+            geodes + (0 until duration - minute).sumOf { geodesProd + it } < best
 
         private fun SimulationState.isOver(): Boolean = minute >= duration
 
