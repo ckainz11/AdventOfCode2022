@@ -78,9 +78,8 @@ class Day19(override val input: String) : Day<Int>(input) {
         private fun buildGeodeBot(state: SimulationState): SimulationState {
             val oresNeeded = max(0, blueprint.costs[3].ore - state.ore)
             val obsidiansNeeded = max(0, blueprint.costs[3].obsidian - state.obsidian)
-            val wait = if (oresNeeded == 0 && obsidiansNeeded == 0) {
-                1
-            } else {
+            val wait = if (oresNeeded == 0 && obsidiansNeeded == 0) 1
+            else {
                 max(
                     ceil(oresNeeded.toFloat() / state.oreProd.toFloat()).toInt(),
                     ceil(obsidiansNeeded.toFloat() / state.obsidianProd.toFloat()).toInt(),
@@ -99,8 +98,7 @@ class Day19(override val input: String) : Day<Int>(input) {
             val oresNeeded = max(0, blueprint.costs[2].ore - state.ore)
             val clayNeeded = max(0, blueprint.costs[2].clay - state.clay)
 
-            val wait = if (oresNeeded == 0 && clayNeeded == 0)
-                1
+            val wait = if (oresNeeded == 0 && clayNeeded == 0) 1
             else {
                 max(
                     ceil(oresNeeded.toFloat() / state.oreProd.toFloat()).toInt(),
@@ -119,8 +117,7 @@ class Day19(override val input: String) : Day<Int>(input) {
         private fun buildClayBot(state: SimulationState): SimulationState {
             val oresNeeded = max(0, blueprint.costs[1].ore - state.ore)
 
-            val wait = if (oresNeeded == 0)
-                1
+            val wait = if (oresNeeded == 0) 1
             else ceil(oresNeeded.toFloat() / state.oreProd.toFloat()).toInt() + 1
 
             return state.progress(wait).let {
@@ -134,8 +131,7 @@ class Day19(override val input: String) : Day<Int>(input) {
         private fun buildOreBot(state: SimulationState): SimulationState {
             val oresNeeded = max(0, blueprint.costs[0].ore - state.ore)
 
-            val wait = if (oresNeeded == 0)
-                1
+            val wait = if (oresNeeded == 0) 1
             else ceil(oresNeeded.toFloat() / state.oreProd.toFloat()).toInt() + 1
 
             return state.progress(wait).let {
