@@ -34,9 +34,10 @@ class Day19(override val input: String) : Day<Int>(input) {
 
         private var best = 0
 
-        private val mostExpensiveOreCost = blueprint.costs.maxOf { it.ore }
-        private val mostExpensiveObsidianCost = blueprint.costs.maxOf { it.obsidian }
-        private val mostExpensiveClayCost = blueprint.costs.maxOf { it.clay }
+        //no need to buy extra robots of one resource, if we are already producing as much as the most expensive robot costs
+        private val highestOreCost = blueprint.costs.maxOf { it.ore }
+        private val highestClayCost = blueprint.costs.maxOf { it.clay }
+        private val highestObsidianCost = blueprint.costs.maxOf { it.obsidian }
 
         fun getMostGeodes(): Int {
             return simulate(SimulationState(0, 0, 0, 0, 0, 1, 0, 0, 0))
@@ -59,17 +60,17 @@ class Day19(override val input: String) : Day<Int>(input) {
                 max = max(result, max)
             }
 
-            if (state.clayProd > 0 && state.obsidianProd < mostExpensiveObsidianCost) {
+            if (state.clayProd > 0 && state.obsidianProd < highestObsidianCost) {
                 val result = simulate(buildObsidianBot(state))
                 max = max(result, max)
             }
 
-            if (state.oreProd > 0 && state.clayProd < mostExpensiveClayCost) {
+            if (state.oreProd > 0 && state.clayProd < highestClayCost) {
                 val result = simulate(buildClayBot(state))
                 max = max(result, max)
             }
 
-            if (state.oreProd in 1 until mostExpensiveOreCost) {
+            if (state.oreProd in 1 until highestOreCost) {
                 val result = simulate(buildOreBot(state))
                 max = max(result, max)
             }
