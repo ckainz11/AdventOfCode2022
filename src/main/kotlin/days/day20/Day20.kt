@@ -21,6 +21,6 @@ class Day20(override val input: String) : Day<Long>(input) {
                     }
                 }
                 moved.indexOfFirst { it.second == 0L }
-                    .let { coords.fold(0) { acc, i -> acc + moved[(it + i) % nums.size].second } }
+                    .let { coords.sumOf { c -> moved[(it + c) % nums.size].second } }
             }
 }
