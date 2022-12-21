@@ -9,24 +9,23 @@ class Day21(override val input: String) : Day<Long>(input) {
 
     private val monkeys = input.lines().map { Monkey.from(it) }.associateBy { it.id }.toMutableMap()
 
-    private val HUMAN = "humn"
-    private val ROOT = "root"
 
-    override fun solve1(): Long = monkeys[ROOT]?.job(monkeys)!!.toLong()
+
+    override fun solve1(): Long = monkeys[Monkey.ROOT]?.job(monkeys)!!.toLong()
 
     override fun solve2(): Long {
         var max = Long.MAX_VALUE
         var min = 0L
         var answer: Pair<Long, Double>? = null
 
-        monkeys[ROOT] = (monkeys[ROOT] as Monkey.Operation).let {
+        monkeys[Monkey.ROOT] = (monkeys[Monkey.ROOT] as Monkey.Operation).let {
             Monkey.Operation(it.id, it.left, it.right) { a, b -> abs(a - b) }
         }
         while (answer == null) {
             val mid = (min + max) / 2
             val results = listOf(min, mid, max).map {
-                monkeys[HUMAN] = Monkey.Yell(HUMAN, it.toDouble())
-                it to monkeys[ROOT]?.job(monkeys)!!
+                monkeys[Monkey.HUMAN] = Monkey.Yell(Monkey.HUMAN, it.toDouble())
+                it to monkeys[Monkey.ROOT]?.job(monkeys)!!
             }.sortedBy { it.second }
 
             results.firstOrNull {it.second == 0.0}.also {
@@ -59,6 +58,10 @@ class Day21(override val input: String) : Day<Long>(input) {
         }
 
         companion object {
+
+            const val HUMAN = "humn"
+            const val ROOT = "root"
+
             fun from(line: String): Monkey =
                 line.split(": ").let { (id, calc) ->
                     calc.split(" ").let {
