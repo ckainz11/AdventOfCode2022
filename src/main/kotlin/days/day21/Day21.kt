@@ -10,7 +10,6 @@ class Day21(override val input: String) : Day<Long>(input) {
     private val monkeys = input.lines().map { Monkey.from(it) }.associateBy { it.id }.toMutableMap()
 
 
-
     override fun solve1(): Long = monkeys[Monkey.ROOT]?.job(monkeys)!!.toLong()
 
     override fun solve2(): Long {
@@ -22,25 +21,21 @@ class Day21(override val input: String) : Day<Long>(input) {
             Monkey.Operation(it.id, it.left, it.right) { a, b -> abs(a - b) }
         }
         while (answer == null) {
-            val mid = (min + max) / 2
-            val results = listOf(min, mid, max).map {
+            answer = listOf(min, (min + max) / 2, max).map {
                 monkeys[Monkey.HUMAN] = Monkey.Yell(Monkey.HUMAN, it.toDouble())
                 it to monkeys[Monkey.ROOT]?.job(monkeys)!!
-            }.sortedBy { it.second }
-
-            results.firstOrNull {it.second == 0.0}.also {
-                if(it != null)
-                    answer = it
+            }.sortedBy { it.second }.let { res ->
+                res.firstOrNull { it.second == 0.0 }.let {
+                    res.take(2).map(Pair<Long, Double>::first).also { (best, best2) ->
+                        min = min(best, best2)
+                        max = max(best, best2)
+                    }
+                    it
+                }
             }
-
-            results.take(2).map { it.first }.also { (best, best2) ->
-                min = min(best, best2)
-                max = max(best, best2)
-            }
-
         }
 
-        return answer?.first!!
+        return answer.first
     }
 
     sealed class Monkey(val id: String) {
