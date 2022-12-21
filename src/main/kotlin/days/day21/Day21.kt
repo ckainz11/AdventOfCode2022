@@ -25,13 +25,11 @@ class Day21(override val input: String) : Day<Long>(input) {
                 monkeys[Monkey.HUMAN] = Monkey.Yell(Monkey.HUMAN, it.toDouble())
                 it to monkeys[Monkey.ROOT]?.job(monkeys)!!
             }.sortedBy { it.second }.let { res ->
-                res.firstOrNull { it.second == 0.0 }.let {
-                    res.take(2).map(Pair<Long, Double>::first).also { (best, best2) ->
-                        min = min(best, best2)
-                        max = max(best, best2)
-                    }
-                    it
+                res.take(2).map(Pair<Long, Double>::first).also { (best, best2) ->
+                    min = min(best, best2)
+                    max = max(best, best2)
                 }
+                res[0].let { if(it.second == 0.0) it else null}
             }
         }
 
