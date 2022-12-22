@@ -1,6 +1,7 @@
 package util
 
 import java.lang.IllegalArgumentException
+import java.lang.IndexOutOfBoundsException
 import java.util.*
 import kotlin.math.abs
 import kotlin.math.sign
@@ -23,6 +24,27 @@ fun <T, R> Matrix<T>.mapMatrixIndexed(transform: (Int, Int, T) -> R): Matrix<R> 
 
 fun <T> Matrix<T>.matrixForEachIndexed(action: (Point, T) -> Unit) {
     this.forEachIndexed { y, row -> row.forEachIndexed { x, col -> action(Point(x, y), col) } }
+}
+
+/**
+ * Returns index of the first element matching the given [predicate], or -1 if the list does not contain such element.
+ */
+fun <T> Matrix<T>.matrixIndexOfFirst(predicate: (T) -> Boolean): Point {
+    for ((y, row) in this.withIndex()) {
+        for ((x, value) in row.withIndex()) {
+            if (predicate(value))
+                return Point(x, y)
+        }
+    }
+    return Point(-1, -1)
+}
+
+fun <T> Matrix<T>.subMatrix(rows: Int, cols: Int, index: Point): Matrix<T> {
+    val sub = mutableListOf<List<T>>()
+    for (y in index.y until index.y + rows) {
+        sub.add(this[y].subList(index.x, index.x + cols))
+    }
+    return sub
 }
 
 fun <T> Matrix<T>.matrixToString(): String = this.joinToString("\n") { it.joinToString(", ") }
@@ -89,10 +111,10 @@ data class Point(var x: Int, var y: Int) {
     companion object {
         val LEFT = Point(-1, 0)
         val RIGHT = Point(1, 0)
-        val UP = Point(0, 1)
-        val DOWN = Point(0, -1)
+        val UP = Point(0, -1)
+        val DOWN = Point(0, 1)
 
-        val directions = listOf(LEFT, RIGHT, UP, DOWN)
+        val directions = listOf(RIGHT, DOWN, LEFT, UP)
     }
 }
 
@@ -106,13 +128,13 @@ fun Point.moveInDirection(direction: Char, step: Int = 1): Point = when (directi
 
 data class Point3(val x: Int, val y: Int, val z: Int) {
     operator fun plus(other: Point3) = Point3(other.x + x, other.y + y, other.z + z)
-    operator fun minus(other: Point3) = Point3(other.x - x, other.y - y, other.z -z)
+    operator fun minus(other: Point3) = Point3(other.x - x, other.y - y, other.z - z)
     operator fun times(n: Int) = Point3(x * n, y * n, z * n)
 
-    fun neighbors(): List<Point3> = listOf (
-            Point3(x + 1, y, z), Point3(x - 1, y, z),
-            Point3(x, y + 1, z), Point3(x, y - 1, z),
-            Point3(x, y, z + 1), Point3(x, y, z - 1),
+    fun neighbors(): List<Point3> = listOf(
+        Point3(x + 1, y, z), Point3(x - 1, y, z),
+        Point3(x, y + 1, z), Point3(x, y - 1, z),
+        Point3(x, y, z + 1), Point3(x, y, z - 1),
     )
 }
 
@@ -214,7 +236,10 @@ fun <T> getCol(array: List<List<T>>, col: Int): List<T> {
     val rows = array.size
     val column = mutableListOf<T>()
     (0 until rows).forEach {
-        column.add(array[it][col])
+        try {
+            column.add(array[it][col])
+        } catch (_: IndexOutOfBoundsException) {
+        }
     }
     return column
 }
